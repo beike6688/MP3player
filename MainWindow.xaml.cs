@@ -192,9 +192,9 @@ public partial class MainWindow : Window
         CdHalo.BeginAnimation(OpacityProperty, breath);
 
         CdHalo.RenderTransformOrigin = new Point(0.5, 0.5);
-        var scale = new ScaleTransform(1, 1);
+        var scale = new ScaleTransform(0.965, 0.965);
         CdHalo.RenderTransform = scale;
-        var sc = new DoubleAnimation(1, 1.04, TimeSpan.FromSeconds(2.2))
+        var sc = new DoubleAnimation(0.965, 1.0, TimeSpan.FromSeconds(2.2))
         {
             AutoReverse = true,
             RepeatBehavior = RepeatBehavior.Forever
