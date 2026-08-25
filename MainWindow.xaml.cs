@@ -312,10 +312,11 @@ public partial class MainWindow : Window
         {
             if (e.Button == WinForms.MouseButtons.Left)
             {
-                if (!IsVisible || WindowState == WindowState.Minimized)
-                    Dispatcher.BeginInvoke(ShowMainWindow);
-                else if (!IsActive)
-                    Dispatcher.BeginInvoke(Activate);
+                Dispatcher.BeginInvoke(() =>
+                {
+                    if (!IsVisible || WindowState == WindowState.Minimized || !IsActive)
+                        ShowMainWindow();
+                });
             }
         };
     }
@@ -342,9 +343,23 @@ public partial class MainWindow : Window
 
     private void ShowMainWindow()
     {
-        Show();
-        WindowState = WindowState.Normal;
+        // 清除残留的透明度动画，确保窗口完全不透明
+        BeginAnimation(OpacityProperty, null);
+        Opacity = 1;
+
+        if (!IsVisible)
+            Show();
+
+        if (WindowState == WindowState.Minimized)
+            WindowState = WindowState.Normal;
+
         Activate();
+        Focus();
+
+        // AllowsTransparency 窗口从隐藏状态恢复时，偶尔只出现任务栏图标而窗口内容不渲染；
+        // 通过 Topmost 翻转强制 WPF 重新合成绘制，保证托盘单击后窗口一定可见。
+        Topmost = true;
+        Topmost = false;
     }
 
     private void HideToTray()
