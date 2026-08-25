@@ -99,10 +99,9 @@ D:\MP3player
 
 依赖仅有 2 个 NuGet 包：NAudio 2.2.1、TagLibSharp 2.3.0。
 
-> 注意：`.NET SDK` 不随项目存放（已删除以节省空间）。
-> 需要开发或发布时，先下载 .NET 8 SDK（win-x64 zip 版）解压到 D 盘任意位置
-> （例如 `D:\MP3player\.dotnet`），`NuGet.Config` 已把包缓存指向
-> `D:\MP3player\.nuget`，不会占用 C 盘。
+> 注意：`.NET SDK` 不放在项目目录里，固定安装在 `D:\.NET\_SDK`（D 盘、不占 C 盘）。
+> 需要开发或发布时，先下载 .NET 8 SDK（win-x64 zip 版）解压到 `D:\.NET\_SDK`，
+> `NuGet.Config` 已把包缓存指向 `D:\MP3player\.nuget`，不会占用 C 盘。
 
 发布单文件自包含程序（含压缩）：
 
