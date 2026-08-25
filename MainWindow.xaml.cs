@@ -1228,19 +1228,25 @@ public partial class MainWindow : Window
         var geo = new StreamGeometry();
         using (var ctx = geo.Open())
         {
+            double tip = Math.Min(9, h * 0.5);
+            double body = h - tip;
             if (upward)
             {
                 ctx.BeginFigure(new Point(-4, 0), true, true);
                 ctx.LineTo(new Point(4, 0), true, false);
-                ctx.LineTo(new Point(1, -h), true, false);
-                ctx.LineTo(new Point(-1, -h), true, false);
+                ctx.LineTo(new Point(4, -body), true, false);
+                ctx.LineTo(new Point(0.8, -h), true, false);
+                ctx.LineTo(new Point(-0.8, -h), true, false);
+                ctx.LineTo(new Point(-4, -body), true, false);
             }
             else
             {
                 ctx.BeginFigure(new Point(-4, 0), true, true);
                 ctx.LineTo(new Point(4, 0), true, false);
-                ctx.LineTo(new Point(1, h), true, false);
-                ctx.LineTo(new Point(-1, h), true, false);
+                ctx.LineTo(new Point(4, body), true, false);
+                ctx.LineTo(new Point(0.8, h), true, false);
+                ctx.LineTo(new Point(-0.8, h), true, false);
+                ctx.LineTo(new Point(-4, body), true, false);
             }
         }
         geo.Freeze();
