@@ -201,21 +201,6 @@ public partial class MainWindow : Window
         scale.BeginAnimation(ScaleTransform.ScaleXProperty, sc);
         scale.BeginAnimation(ScaleTransform.ScaleYProperty, sc);
 
-        if (CdHalo.Effect is DropShadowEffect dse)
-        {
-            var glow = new DoubleAnimation(0.4, 0.9, TimeSpan.FromSeconds(2.2))
-            {
-                AutoReverse = true,
-                RepeatBehavior = RepeatBehavior.Forever
-            };
-            dse.BeginAnimation(DropShadowEffect.OpacityProperty, glow);
-            var blur = new DoubleAnimation(20, 32, TimeSpan.FromSeconds(2.2))
-            {
-                AutoReverse = true,
-                RepeatBehavior = RepeatBehavior.Forever
-            };
-            dse.BeginAnimation(DropShadowEffect.BlurRadiusProperty, blur);
-        }
     }
 
     private void BuildStars()
@@ -1192,8 +1177,11 @@ public partial class MainWindow : Window
 
     #region 计时器与窗口交互
 
+    private bool _dragging;
+
     private void Timer_Tick(object? sender, EventArgs e)
     {
+        if (_dragging) return;
         if (_player.HasTrack)
         {
             double len = _player.Length.TotalSeconds;
@@ -1243,18 +1231,9 @@ public partial class MainWindow : Window
             brush.GradientStops.Add(new GradientStop(Color.FromRgb(0, 102, 255), 0));
             brush.GradientStops.Add(new GradientStop(Color.FromRgb(160, 32, 240), 0.5));
             brush.GradientStops.Add(new GradientStop(Color.FromRgb(255, 85, 221), 1));
-            var glow = new DropShadowEffect
-            {
-                Color = Color.FromRgb(160, 32, 240),
-                BlurRadius = 7,
-                ShadowDepth = 0,
-                Opacity = 0.4
-            };
-
             var bar = new System.Windows.Shapes.Rectangle
             {
                 Fill = brush,
-                Effect = glow,
                 Width = 4,
                 Height = 6,
                 RadiusX = 2.5,
@@ -1423,7 +1402,9 @@ public partial class MainWindow : Window
             return;
         }
         if (e.OriginalSource is DependencyObject d && IsInteractiveElement(d)) return;
+        _dragging = true;
         try { DragMove(); } catch { }
+        _dragging = false;
     }
 
     private static bool IsInteractiveElement(DependencyObject node)

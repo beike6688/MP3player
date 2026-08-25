@@ -39,11 +39,7 @@
                 <Ellipse Width="640" Height="640" HorizontalAlignment="Right" VerticalAlignment="Center"
                          Margin="0,0,-220,0" Fill="{StaticResource BlueGlowBrush}"/>
 
-                <Image x:Name="BgCoverImage" Stretch="UniformToFill" Opacity="0.35">
-                    <Image.Effect>
-                        <BlurEffect Radius="70"/>
-                    </Image.Effect>
-                </Image>
+                <Image x:Name="BgCoverImage" Stretch="UniformToFill" Opacity="0.28"/>
                 <Border Background="#B3080B18"/>
                 <Canvas x:Name="StarCanvas" IsHitTestVisible="False" Opacity="0.6"/>
             </Grid>
