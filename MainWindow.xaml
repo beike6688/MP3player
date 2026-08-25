@@ -16,8 +16,8 @@
     <Border x:Name="RootBorder" ClipToBounds="True"
             CornerRadius="24"
             Background="{StaticResource BgBrush}"
-            BorderBrush="#8CFFFFFF"
-            BorderThickness="1">
+            BorderBrush="#2AFFFFFF"
+            BorderThickness="0">
         <Grid x:Name="RootContent">
             <Grid.Clip>
                 <RectangleGeometry x:Name="RootClipGeometry" RadiusX="24" RadiusY="24"/>
@@ -527,6 +527,9 @@
                             Cursor="Hand" FontFamily="Microsoft YaHei UI"/>
                 </StackPanel>
             </Border>
+            <Path x:Name="FramePath" Stroke="#2AFFFFFF" StrokeThickness="1" IsHitTestVisible="False"
+                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         </Grid>
     </Border>
 </Window>

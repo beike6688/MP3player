@@ -100,6 +100,7 @@ public partial class MainWindow : Window
         {
             if (RootClipGeometry != null)
                 RootClipGeometry.Rect = new Rect(0, 0, RootBorder.ActualWidth, RootBorder.ActualHeight);
+            UpdateFramePath();
         };
         _startFiles = startFiles;
         _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
@@ -153,6 +154,30 @@ public partial class MainWindow : Window
         UpdateSeekUiFromPlayer();
 
         _timer.Start();
+    }
+
+    private void UpdateFramePath()
+    {
+        double w = RootBorder.ActualWidth;
+        double h = RootBorder.ActualHeight;
+        if (w <= 0 || h <= 0 || FramePath == null) return;
+        double r = 24;
+        double i = 0.5;
+        var geo = new StreamGeometry();
+        using (var ctx = geo.Open())
+        {
+            ctx.BeginFigure(new Point(i + r, i), false, true);
+            ctx.LineTo(new Point(w - i - r, i), true, false);
+            ctx.ArcTo(new Point(w - i, i + r), new Size(r, r), 0, false, SweepDirection.Clockwise, true, false);
+            ctx.LineTo(new Point(w - i, h - i - r), true, false);
+            ctx.ArcTo(new Point(w - i - r, h - i), new Size(r, r), 0, false, SweepDirection.Clockwise, true, false);
+            ctx.LineTo(new Point(i + r, h - i), true, false);
+            ctx.ArcTo(new Point(i, h - i - r), new Size(r, r), 0, false, SweepDirection.Clockwise, true, false);
+            ctx.LineTo(new Point(i, i + r), true, false);
+            ctx.ArcTo(new Point(i + r, i), new Size(r, r), 0, false, SweepDirection.Clockwise, true, false);
+        }
+        geo.Freeze();
+        FramePath.Data = geo;
     }
 
     private void ApplyWindowBounds()
@@ -1416,6 +1441,7 @@ public partial class MainWindow : Window
                 RootClipGeometry.RadiusY = 0;
                 RootClipGeometry.Rect = new Rect(0, 0, RootBorder.ActualWidth, RootBorder.ActualHeight);
             }
+            FramePath.Visibility = Visibility.Collapsed;
             MaximizeIcon.Data = Geometry.Parse("M5,8 H16 V19 H5 Z M8,5 H19 V16 H17 V7 H8 Z");
         }
         else
@@ -1444,6 +1470,8 @@ public partial class MainWindow : Window
                 RootClipGeometry.RadiusY = 24;
                 RootClipGeometry.Rect = new Rect(0, 0, RootBorder.ActualWidth, RootBorder.ActualHeight);
             }
+            FramePath.Visibility = Visibility.Visible;
+            UpdateFramePath();
             MaximizeIcon.Data = Geometry.Parse("M6,6 H18 V18 H6 Z M8,8 H16 V16 H8 Z");
         }
     }
