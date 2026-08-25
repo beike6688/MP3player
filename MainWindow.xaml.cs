@@ -155,6 +155,7 @@ public partial class MainWindow : Window
         ApplyStarsVisibility();
 
         _timer.Start();
+        ScrollToCurrentSong();
     }
 
     private void UpdateFramePath()
@@ -630,7 +631,7 @@ public partial class MainWindow : Window
         }
 
         LoadLyricsData(song.Path);
-        PlaylistBox.ScrollIntoView(song);
+        ScrollToCurrentSong();
 
         if (autoPlay)
         {
@@ -648,6 +649,22 @@ public partial class MainWindow : Window
         UpdatePlaybackButtons();
         _miniWindow?.UpdateSong(song);
         _lyricWindow?.UpdateSong(song.DisplayTitle, _lyrics);
+    }
+
+    private void ScrollToCurrentSong()
+    {
+        if (_currentIndex < 0 || _currentIndex >= _songs.Count) return;
+        var song = _songs[_currentIndex];
+
+        PlaylistBox.ScrollIntoView(song);
+
+        // ScrollIntoView 在列表布局完成前调用会失效（尤其是启动恢复时），
+        // 延迟到布局完成后再次滚动，确保当前播放歌曲始终在可视区域内。
+        Dispatcher.BeginInvoke(new Action(() =>
+        {
+            if (_currentIndex >= 0 && _currentIndex < _songs.Count)
+                PlaylistBox.ScrollIntoView(_songs[_currentIndex]);
+        }), DispatcherPriority.Loaded);
     }
 
     private void PlayPause()
