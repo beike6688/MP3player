@@ -168,7 +168,7 @@ public partial class MainWindow : Window
     private void InitTray()
     {
         _appIcon = CreateAppIcon();
-        Icon = Imaging.CreateBitmapSourceFromHIcon(_appIcon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+
 
         _trayIcon = new WinForms.NotifyIcon
         {
@@ -190,7 +190,11 @@ public partial class MainWindow : Window
             Application.Current.Shutdown();
         }));
         _trayIcon.ContextMenuStrip = menu;
-        _trayIcon.DoubleClick += (_, _) => Dispatcher.BeginInvoke(ShowMainWindow);
+        _trayIcon.MouseClick += (_, e) =>
+        {
+            if (e.Button == WinForms.MouseButtons.Left)
+                Dispatcher.BeginInvoke(ShowMainWindow);
+        };
     }
 
     private static System.Drawing.Icon CreateAppIcon()
@@ -656,6 +660,21 @@ public partial class MainWindow : Window
     {
         double v = Math.Clamp(VolumeSlider.Value + delta, 0, 1);
         VolumeSlider.Value = v;
+    }
+
+    private double _lastVolume = 0.8;
+
+    private void VolumeIcon_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (VolumeSlider.Value > 0.001)
+        {
+            _lastVolume = VolumeSlider.Value;
+            VolumeSlider.Value = 0;
+        }
+        else
+        {
+            VolumeSlider.Value = _lastVolume > 0.001 ? _lastVolume : 0.8;
+        }
     }
 
     private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -1391,20 +1410,7 @@ public partial class MainWindow : Window
             RootBorder.BorderThickness = new Thickness(1);
             MaximizeIcon.Data = Geometry.Parse("M6,6 H18 V18 H6 Z M8,8 H16 V16 H8 Z");
         }
-        AnimateContentSwitch();
-    }
 
-    private void AnimateContentSwitch()
-    {
-        if (RootBorder.RenderTransform is not ScaleTransform st)
-        {
-            st = new ScaleTransform(1, 1);
-            RootBorder.RenderTransform = st;
-        }
-        RootBorder.RenderTransformOrigin = new Point(0.5, 0.5);
-        st.BeginAnimation(ScaleTransform.ScaleXProperty, new DoubleAnimation(0.965, 1, TimeSpan.FromMilliseconds(160)));
-        st.BeginAnimation(ScaleTransform.ScaleYProperty, new DoubleAnimation(0.965, 1, TimeSpan.FromMilliseconds(160)));
-        RootBorder.BeginAnimation(OpacityProperty, new DoubleAnimation(0.6, 1, TimeSpan.FromMilliseconds(160)));
     }
 
     private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)

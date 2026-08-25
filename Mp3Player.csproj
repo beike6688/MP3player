@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -10,6 +10,7 @@
     <AssemblyTitle>炫音播放器</AssemblyTitle>
     <Product>炫音播放器</Product>
     <RootNamespace>Mp3Player</RootNamespace>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,4 +23,7 @@
     <Using Remove="System.Drawing" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Resource Include="Assets\app.ico"/>
+  </ItemGroup>
 </Project>
