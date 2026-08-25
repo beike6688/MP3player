@@ -1230,14 +1230,14 @@ public partial class MainWindow : Window
         {
             if (upward)
             {
-                ctx.BeginFigure(new Point(-4, 0), false, true);
+                ctx.BeginFigure(new Point(-4, 0), true, true);
                 ctx.LineTo(new Point(4, 0), true, false);
                 ctx.LineTo(new Point(1, -h), true, false);
                 ctx.LineTo(new Point(-1, -h), true, false);
             }
             else
             {
-                ctx.BeginFigure(new Point(-4, 0), false, true);
+                ctx.BeginFigure(new Point(-4, 0), true, true);
                 ctx.LineTo(new Point(4, 0), true, false);
                 ctx.LineTo(new Point(1, h), true, false);
                 ctx.LineTo(new Point(-1, h), true, false);
