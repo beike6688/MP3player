@@ -1167,7 +1167,7 @@ public partial class MainWindow : Window
             {
                 Fill = brush,
                 Effect = glow,
-                Width = 6,
+                Width = 4,
                 Height = 6,
                 RadiusX = 2.5,
                 RadiusY = 2.5,
@@ -1180,7 +1180,7 @@ public partial class MainWindow : Window
             var refl = new System.Windows.Shapes.Rectangle
             {
                 Fill = brush,
-                Width = 6,
+                Width = 4,
                 Height = 6,
                 RadiusX = 2.5,
                 RadiusY = 2.5,
@@ -1275,6 +1275,8 @@ public partial class MainWindow : Window
                 _spectrum[i] = MathF.Sqrt(re * re + im * im);
             }
 
+            var raw = new float[VisBarCount];
+            float total = 0f;
             for (int i = 0; i < VisBarCount; i++)
             {
                 double f0 = fMin * Math.Pow(fMax / fMin, (double)i / VisBarCount);
@@ -1289,8 +1291,15 @@ public partial class MainWindow : Window
                 float norm = Math.Clamp((db + 68f) / 52f, 0f, 1f);
                 norm = MathF.Pow(norm, 0.7f);
                 float wobble = 0.86f + 0.14f * (float)Math.Sin(_specTime2 * 2.3 + i * 0.85);
-                float target = Math.Max(norm * wobble, rms * 0.12f);
-                _visTargets[i] = Math.Min(1f, target);
+                raw[i] = Math.Max(norm * wobble, rms * 0.12f);
+                total += raw[i];
+            }
+            float avgAll = total / VisBarCount;
+            for (int i = 0; i < VisBarCount; i++)
+            {
+                float balanced = raw[i] * 0.45f + avgAll * 0.55f;
+                float centerW = 0.55f + 0.45f * (float)Math.Sin(Math.PI * i / (VisBarCount - 1));
+                _visTargets[i] = Math.Min(1f, balanced * centerW);
             }
             _specTime2 += 0.1;
         }
