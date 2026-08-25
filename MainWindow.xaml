@@ -46,13 +46,14 @@
                         <BlurEffect Radius="100"/>
                     </Ellipse.Effect>
                 </Ellipse>
-                <Canvas x:Name="StarCanvas" IsHitTestVisible="False"/>
+
                 <Image x:Name="BgCoverImage" Stretch="UniformToFill" Opacity="0.35">
                     <Image.Effect>
                         <BlurEffect Radius="70"/>
                     </Image.Effect>
                 </Image>
                 <Border Background="#B3080B18"/>
+                <Canvas x:Name="StarCanvas" IsHitTestVisible="False"/>
             </Grid>
 
             <!-- ========== 内容层 ========== -->
