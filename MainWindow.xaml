@@ -235,6 +235,7 @@
                                     </UniformGrid.Effect>
                                 </UniformGrid>
                                 <Canvas x:Name="ParticleCanvas" Grid.Row="0" IsHitTestVisible="False"/>
+                                <Canvas x:Name="TrailCanvas" Grid.Row="0" IsHitTestVisible="False"/>
                             </Grid>
                         </Border>
                     </Grid>

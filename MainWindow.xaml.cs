@@ -61,8 +61,15 @@ public partial class MainWindow : Window
     private readonly Complex[] _fftBuffer = new Complex[FftSize];
     private readonly float[] _sampleBuffer = new float[FftSize];
     private readonly float[] _spectrum = new float[FftSize / 2];
-    private Rectangle[] _visBars = Array.Empty<Rectangle>();
-    private Rectangle[] _visReflectionBars = Array.Empty<Rectangle>();
+    private System.Windows.Shapes.Path[] _visBars = Array.Empty<System.Windows.Shapes.Path>();
+    private System.Windows.Shapes.Path[] _visReflectionBars = Array.Empty<System.Windows.Shapes.Path>();
+    private Ellipse[] _trailParticles = Array.Empty<Ellipse>();
+    private double[] _trailPx = Array.Empty<double>();
+    private double[] _trailPy = Array.Empty<double>();
+    private double[] _trailTargetX = Array.Empty<double>();
+    private double[] _trailTargetY = Array.Empty<double>();
+    private double[] _trailOpacity = Array.Empty<double>();
+    private double[] _trailSize = Array.Empty<double>();
     private float[] _visLevels = Array.Empty<float>();
     private float[] _visTargets = Array.Empty<float>();
     private Ellipse[] _particles = Array.Empty<Ellipse>();
@@ -1139,57 +1146,138 @@ public partial class MainWindow : Window
         VisGrid.Children.Clear();
         VisReflectionGrid.Children.Clear();
         ParticleCanvas.Children.Clear();
-        _visBars = new Rectangle[VisBarCount];
-        _visReflectionBars = new Rectangle[VisBarCount];
+        TrailCanvas.Children.Clear();
+        _visBars = new System.Windows.Shapes.Path[VisBarCount];
+        _visReflectionBars = new System.Windows.Shapes.Path[VisBarCount];
         _visLevels = new float[VisBarCount];
         _visTargets = new float[VisBarCount];
+        _trailParticles = new Ellipse[VisBarCount * 3];
+        _trailPx = new double[VisBarCount * 3];
+        _trailPy = new double[VisBarCount * 3];
+        _trailTargetX = new double[VisBarCount * 3];
+        _trailTargetY = new double[VisBarCount * 3];
+        _trailOpacity = new double[VisBarCount * 3];
+        _trailSize = new double[VisBarCount * 3];
         BuildParticles();
-        var brush = new LinearGradientBrush
-        {
-            StartPoint = new Point(0, 0),
-            EndPoint = new Point(0, 1)
-        };
-        brush.GradientStops.Add(new GradientStop(Color.FromRgb(0, 102, 255), 0));
-        brush.GradientStops.Add(new GradientStop(Color.FromRgb(160, 32, 240), 0.5));
-        brush.GradientStops.Add(new GradientStop(Color.FromRgb(255, 85, 221), 1));
 
         for (int i = 0; i < VisBarCount; i++)
         {
-            var bar = new Rectangle
+            double hue = 225 + (340 - 225) * i / (double)(VisBarCount - 1);
+            var top = HsvToRgb(hue, 0.9, 1.0);
+            var bottom = HsvToRgb(hue, 0.95, 0.38);
+            var brush = new LinearGradientBrush(bottom, top, 90);
+            var glow = new DropShadowEffect
+            {
+                Color = top,
+                BlurRadius = 20,
+                ShadowDepth = 0,
+                Opacity = 0.8
+            };
+
+            var bar = new System.Windows.Shapes.Path
             {
                 Fill = brush,
-                Width = 6,
-                Height = 6,
-                RadiusX = 2.5,
-                RadiusY = 2.5,
+                Effect = glow,
+                Width = 8,
                 VerticalAlignment = VerticalAlignment.Bottom,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Effect = new DropShadowEffect
-                {
-                    Color = Color.FromRgb(160, 32, 240),
-                    BlurRadius = 20,
-                    ShadowDepth = 0,
-                    Opacity = 0.8
-                }
+                HorizontalAlignment = HorizontalAlignment.Center
             };
             _visBars[i] = bar;
             VisGrid.Children.Add(bar);
 
-            var refl = new Rectangle
+            var refl = new System.Windows.Shapes.Path
             {
                 Fill = brush,
-                Width = 6,
-                Height = 6,
-                RadiusX = 2.5,
-                RadiusY = 2.5,
+                Width = 8,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             _visReflectionBars[i] = refl;
             VisReflectionGrid.Children.Add(refl);
+
+            for (int pi = 0; pi < 3; pi++)
+            {
+                int idx = i * 3 + pi;
+                _trailSize[idx] = 1.5 + _rng.NextDouble() * 3.5;
+                _trailOpacity[idx] = 0.3 + _rng.NextDouble() * 0.55;
+                _trailPx[idx] = 0;
+                _trailPy[idx] = 0;
+                _trailTargetX[idx] = 0;
+                _trailTargetY[idx] = 0;
+                var dot = new Ellipse
+                {
+                    Width = _trailSize[idx],
+                    Height = _trailSize[idx],
+                    Fill = new SolidColorBrush(top),
+                    IsHitTestVisible = false
+                };
+                _trailParticles[idx] = dot;
+                TrailCanvas.Children.Add(dot);
+            }
         }
     }
 
+    private static StreamGeometry BuildBarGeometry(double h, bool upward)
+    {
+        var geo = new StreamGeometry();
+        using (var ctx = geo.Open())
+        {
+            if (upward)
+            {
+                ctx.BeginFigure(new Point(-4, 0), false, true);
+                ctx.LineTo(new Point(4, 0), true, false);
+                ctx.LineTo(new Point(1, -h), true, false);
+                ctx.LineTo(new Point(-1, -h), true, false);
+            }
+            else
+            {
+                ctx.BeginFigure(new Point(-4, 0), false, true);
+                ctx.LineTo(new Point(4, 0), true, false);
+                ctx.LineTo(new Point(1, h), true, false);
+                ctx.LineTo(new Point(-1, h), true, false);
+            }
+        }
+        geo.Freeze();
+        return geo;
+    }
+
+    private static Color HsvToRgb(double h, double s, double v)
+    {
+        double c = v * s;
+        double x = c * (1 - Math.Abs((h / 60.0) % 2 - 1));
+        double m = v - c;
+        double r, g, b;
+        if (h < 60) { r = c; g = x; b = 0; }
+        else if (h < 120) { r = x; g = c; b = 0; }
+        else if (h < 180) { r = 0; g = c; b = x; }
+        else if (h < 240) { r = 0; g = x; b = c; }
+        else if (h < 300) { r = x; g = 0; b = c; }
+        else { r = c; g = 0; b = x; }
+        return Color.FromRgb((byte)((r + m) * 255), (byte)((g + m) * 255), (byte)((b + m) * 255));
+    }
+
+    private void UpdateTrailParticle(int barIdx, float level, bool playing)
+    {
+        double colW = VisGrid.ActualWidth / VisBarCount;
+        double cx = barIdx * colW + colW / 2;
+        double visH = Math.Max(20, VisGrid.ActualHeight - 8);
+        double topY = visH - level * visH;
+        for (int pi = 0; pi < 3; pi++)
+        {
+            int idx = barIdx * 3 + pi;
+            var dot = _trailParticles[idx];
+            if (_rng.NextDouble() < 0.2)
+            {
+                _trailTargetX[idx] = cx + (_rng.NextDouble() - 0.5) * 14;
+                _trailTargetY[idx] = topY - _rng.NextDouble() * Math.Max(8, level * visH * 0.6);
+            }
+            _trailPx[idx] += (_trailTargetX[idx] - _trailPx[idx]) * 0.12;
+            _trailPy[idx] += (_trailTargetY[idx] - _trailPy[idx]) * 0.12;
+            Canvas.SetLeft(dot, _trailPx[idx]);
+            Canvas.SetTop(dot, _trailPy[idx]);
+            dot.Opacity = playing ? _trailOpacity[idx] * Math.Min(1, level * 5) : 0;
+        }
+    }
     private void BuildParticles()
     {
         _particles = new Ellipse[ParticleCount];
@@ -1317,9 +1405,10 @@ public partial class MainWindow : Window
             }
             _visLevels[i] = next;
             double maxH = Math.Max(20, VisGrid.ActualHeight - 8);
-            _visBars[i].Height = Math.Max(6, next * maxH);
+            _visBars[i].Data = BuildBarGeometry(Math.Max(5, next * maxH), true);
             double reflH = Math.Max(20, VisReflectionGrid.ActualHeight - 8);
-            _visReflectionBars[i].Height = Math.Max(6, next * reflH);
+            _visReflectionBars[i].Data = BuildBarGeometry(Math.Max(5, next * reflH), false);
+            UpdateTrailParticle(i, next, playing);
         }
     }
 
