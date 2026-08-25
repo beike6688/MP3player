@@ -184,7 +184,7 @@ public partial class MainWindow : Window
     }
 
     private Ellipse[] _stars = Array.Empty<Ellipse>();
-    private const int StarCount = 70;
+    private const int StarCount = 100;
 
     private void StartHaloBreath()
     {
@@ -231,28 +231,28 @@ public partial class MainWindow : Window
         _stars = new Ellipse[StarCount];
         for (int i = 0; i < StarCount; i++)
         {
-            int r = 200 + _rng.Next(40);
-            int g = 205 + _rng.Next(35);
+            int r = 225 + _rng.Next(30);
+            int g = 230 + _rng.Next(25);
             var star = new Ellipse
             {
-                Width = 0.8 + _rng.NextDouble() * 1.8,
-                Height = 0.8 + _rng.NextDouble() * 1.8,
+                Width = 1.3 + _rng.NextDouble() * 2.4,
+                Height = 1.3 + _rng.NextDouble() * 2.4,
                 Fill = new SolidColorBrush(Color.FromRgb((byte)r, (byte)g, 255)),
                 IsHitTestVisible = false
             };
-            if (_rng.NextDouble() < 0.35)
+            if (_rng.NextDouble() < 0.55)
             {
                 star.Effect = new DropShadowEffect
                 {
                     Color = Color.FromRgb(140, 170, 255),
-                    BlurRadius = 4,
+                    BlurRadius = 7,
                     ShadowDepth = 0,
-                    Opacity = 0.7
+                    Opacity = 0.9
                 };
             }
             StarCanvas.Children.Add(star);
             _stars[i] = star;
-            var op = new DoubleAnimation(0.25, 1.0, TimeSpan.FromSeconds(2 + _rng.NextDouble() * 4))
+            var op = new DoubleAnimation(0.12, 1.0, TimeSpan.FromSeconds(2 + _rng.NextDouble() * 4))
             {
                 AutoReverse = true,
                 RepeatBehavior = RepeatBehavior.Forever,
