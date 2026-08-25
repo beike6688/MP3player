@@ -206,7 +206,10 @@ public partial class MainWindow : Window
         _trayIcon.MouseClick += (_, e) =>
         {
             if (e.Button == WinForms.MouseButtons.Left)
-                Dispatcher.BeginInvoke(ShowMainWindow);
+            {
+                if (!IsVisible || WindowState == WindowState.Minimized)
+                    Dispatcher.BeginInvoke(ShowMainWindow);
+            }
         };
     }
 
@@ -1432,12 +1435,12 @@ public partial class MainWindow : Window
                     });
                 }
             }
-            RootBorder.CornerRadius = new CornerRadius(16);
+            RootBorder.CornerRadius = new CornerRadius(24);
             RootBorder.BorderThickness = new Thickness(1);
             if (RootClipGeometry != null)
             {
-                RootClipGeometry.RadiusX = 16;
-                RootClipGeometry.RadiusY = 16;
+                RootClipGeometry.RadiusX = 23;
+                RootClipGeometry.RadiusY = 23;
                 RootClipGeometry.Rect = new Rect(0, 0, RootBorder.ActualWidth, RootBorder.ActualHeight);
             }
             MaximizeIcon.Data = Geometry.Parse("M6,6 H18 V18 H6 Z M8,8 H16 V16 H8 Z");
