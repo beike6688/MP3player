@@ -101,6 +101,7 @@ public partial class MainWindow : Window
             if (RootClipGeometry != null)
                 RootClipGeometry.Rect = new Rect(0, 0, RootBorder.ActualWidth, RootBorder.ActualHeight);
             UpdateFramePath();
+            PositionStars();
         };
         _startFiles = startFiles;
         _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
@@ -152,6 +153,7 @@ public partial class MainWindow : Window
         }
 
         UpdateSeekUiFromPlayer();
+        BuildStars();
         StartHaloBreath();
 
         _timer.Start();
@@ -180,6 +182,9 @@ public partial class MainWindow : Window
         geo.Freeze();
         FramePath.Data = geo;
     }
+
+    private Ellipse[] _stars = Array.Empty<Ellipse>();
+    private const int StarCount = 70;
 
     private void StartHaloBreath()
     {
@@ -216,6 +221,57 @@ public partial class MainWindow : Window
                 RepeatBehavior = RepeatBehavior.Forever
             };
             dse.BeginAnimation(DropShadowEffect.BlurRadiusProperty, blur);
+        }
+    }
+
+    private void BuildStars()
+    {
+        if (StarCanvas == null) return;
+        StarCanvas.Children.Clear();
+        _stars = new Ellipse[StarCount];
+        for (int i = 0; i < StarCount; i++)
+        {
+            int r = 200 + _rng.Next(40);
+            int g = 205 + _rng.Next(35);
+            var star = new Ellipse
+            {
+                Width = 0.8 + _rng.NextDouble() * 1.8,
+                Height = 0.8 + _rng.NextDouble() * 1.8,
+                Fill = new SolidColorBrush(Color.FromRgb((byte)r, (byte)g, 255)),
+                IsHitTestVisible = false
+            };
+            if (_rng.NextDouble() < 0.35)
+            {
+                star.Effect = new DropShadowEffect
+                {
+                    Color = Color.FromRgb(140, 170, 255),
+                    BlurRadius = 4,
+                    ShadowDepth = 0,
+                    Opacity = 0.7
+                };
+            }
+            StarCanvas.Children.Add(star);
+            _stars[i] = star;
+            var op = new DoubleAnimation(0.25, 1.0, TimeSpan.FromSeconds(2 + _rng.NextDouble() * 4))
+            {
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever,
+                BeginTime = TimeSpan.FromSeconds(_rng.NextDouble() * 3)
+            };
+            star.BeginAnimation(OpacityProperty, op);
+        }
+        PositionStars();
+    }
+
+    private void PositionStars()
+    {
+        double w = StarCanvas.ActualWidth;
+        double h = StarCanvas.ActualHeight;
+        if (w <= 0 || _stars.Length == 0) return;
+        for (int i = 0; i < _stars.Length; i++)
+        {
+            Canvas.SetLeft(_stars[i], _rng.NextDouble() * w);
+            Canvas.SetTop(_stars[i], _rng.NextDouble() * h);
         }
     }
 
