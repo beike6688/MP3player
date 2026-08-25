@@ -1233,30 +1233,20 @@ public partial class MainWindow : Window
         }
     }
 
-    private static StreamGeometry BuildBarGeometry(double h, bool upward, double[] jag)
+    private static StreamGeometry BuildBarGeometry(double h, bool upward)
     {
         var geo = new StreamGeometry();
         using (var ctx = geo.Open())
         {
-            double tip = Math.Min(16, h * 0.55);
-            double body = Math.Max(0, h - tip);
-            int n = jag.Length;
+            double tip = Math.Min(9, h * 0.5);
+            double body = h - tip;
             if (upward)
             {
                 ctx.BeginFigure(new Point(-4, 0), true, true);
                 ctx.LineTo(new Point(4, 0), true, false);
                 ctx.LineTo(new Point(4, -body), true, false);
-                for (int k = 0; k < n; k++)
-                {
-                    double t = (k + 1) / (double)n;
-                    ctx.LineTo(new Point(jag[k], -(body + tip * t)), true, false);
-                }
-                ctx.LineTo(new Point(-0.5, -h), true, false);
-                for (int k = n - 1; k >= 0; k--)
-                {
-                    double t = (k + 1) / (double)n;
-                    ctx.LineTo(new Point(-jag[k], -(body + tip * t)), true, false);
-                }
+                ctx.LineTo(new Point(0.8, -h), true, false);
+                ctx.LineTo(new Point(-0.8, -h), true, false);
                 ctx.LineTo(new Point(-4, -body), true, false);
             }
             else
@@ -1264,17 +1254,8 @@ public partial class MainWindow : Window
                 ctx.BeginFigure(new Point(-4, 0), true, true);
                 ctx.LineTo(new Point(4, 0), true, false);
                 ctx.LineTo(new Point(4, body), true, false);
-                for (int k = 0; k < n; k++)
-                {
-                    double t = (k + 1) / (double)n;
-                    ctx.LineTo(new Point(jag[k], body + tip * t), true, false);
-                }
-                ctx.LineTo(new Point(-0.5, h), true, false);
-                for (int k = n - 1; k >= 0; k--)
-                {
-                    double t = (k + 1) / (double)n;
-                    ctx.LineTo(new Point(-jag[k], body + tip * t), true, false);
-                }
+                ctx.LineTo(new Point(0.8, h), true, false);
+                ctx.LineTo(new Point(-0.8, h), true, false);
                 ctx.LineTo(new Point(-4, body), true, false);
             }
         }
@@ -1445,9 +1426,9 @@ public partial class MainWindow : Window
             }
             _visLevels[i] = next;
             double maxH = Math.Max(20, VisGrid.ActualHeight - 8);
-            _visBars[i].Data = BuildBarGeometry(Math.Max(5, next * maxH), true, _jagPatterns[i]);
+            _visBars[i].Data = BuildBarGeometry(Math.Max(5, next * maxH), true);
             double reflH = Math.Max(20, VisReflectionGrid.ActualHeight - 8);
-            _visReflectionBars[i].Data = BuildBarGeometry(Math.Max(5, next * reflH), false, _jagPatterns[i]);
+            _visReflectionBars[i].Data = BuildBarGeometry(Math.Max(5, next * reflH), false);
             UpdateTrailParticle(i, next, playing);
         }
     }
