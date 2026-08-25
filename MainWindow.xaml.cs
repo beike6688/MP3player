@@ -63,14 +63,6 @@ public partial class MainWindow : Window
     private readonly float[] _spectrum = new float[FftSize / 2];
     private System.Windows.Shapes.Rectangle[] _visBars = Array.Empty<System.Windows.Shapes.Rectangle>();
     private System.Windows.Shapes.Rectangle[] _visReflectionBars = Array.Empty<System.Windows.Shapes.Rectangle>();
-    private Ellipse[] _trailParticles = Array.Empty<Ellipse>();
-    private double[] _trailPx = Array.Empty<double>();
-    private double[] _trailPy = Array.Empty<double>();
-    private double[] _trailTargetX = Array.Empty<double>();
-    private double[] _trailTargetY = Array.Empty<double>();
-    private double[] _trailOpacity = Array.Empty<double>();
-    private double[] _trailSize = Array.Empty<double>();
-    private double[][] _jagPatterns = Array.Empty<double[]>();
     private float[] _visLevels = Array.Empty<float>();
     private float[] _visTargets = Array.Empty<float>();
     private Ellipse[] _particles = Array.Empty<Ellipse>();
@@ -1147,19 +1139,10 @@ public partial class MainWindow : Window
         VisGrid.Children.Clear();
         VisReflectionGrid.Children.Clear();
         ParticleCanvas.Children.Clear();
-        TrailCanvas.Children.Clear();
         _visBars = new System.Windows.Shapes.Rectangle[VisBarCount];
         _visReflectionBars = new System.Windows.Shapes.Rectangle[VisBarCount];
         _visLevels = new float[VisBarCount];
         _visTargets = new float[VisBarCount];
-        _trailParticles = new Ellipse[VisBarCount * 3];
-        _jagPatterns = new double[VisBarCount][];
-        _trailPx = new double[VisBarCount * 3];
-        _trailPy = new double[VisBarCount * 3];
-        _trailTargetX = new double[VisBarCount * 3];
-        _trailTargetY = new double[VisBarCount * 3];
-        _trailOpacity = new double[VisBarCount * 3];
-        _trailSize = new double[VisBarCount * 3];
         BuildParticles();
 
         for (int i = 0; i < VisBarCount; i++)
@@ -1207,51 +1190,9 @@ public partial class MainWindow : Window
             _visReflectionBars[i] = refl;
             VisReflectionGrid.Children.Add(refl);
 
-            for (int pi = 0; pi < 3; pi++)
-            {
-                int idx = i * 3 + pi;
-                _trailSize[idx] = 1.5 + _rng.NextDouble() * 3.5;
-                _trailOpacity[idx] = 0.3 + _rng.NextDouble() * 0.55;
-                _trailPx[idx] = 0;
-                _trailPy[idx] = 0;
-                _trailTargetX[idx] = 0;
-                _trailTargetY[idx] = 0;
-                var dot = new Ellipse
-                {
-                    Width = _trailSize[idx],
-                    Height = _trailSize[idx],
-                    Fill = new SolidColorBrush(Color.FromRgb(160, 32, 240)),
-                    IsHitTestVisible = false
-                };
-                _trailParticles[idx] = dot;
-                TrailCanvas.Children.Add(dot);
-            }
-        }
+}
     }
 
-    private void UpdateTrailParticle(int barIdx, float level, bool playing)
-    {
-        double colW = (VisGrid.ActualWidth - 52) / VisBarCount;
-        double cx = 26 + barIdx * colW + colW / 2;
-        double visH = Math.Max(20, VisGrid.ActualHeight);
-        double barH = level * (visH - 8);
-        double baseY = visH - 4;
-        for (int pi = 0; pi < 3; pi++)
-        {
-            int idx = barIdx * 3 + pi;
-            var dot = _trailParticles[idx];
-            if (_rng.NextDouble() < 0.2)
-            {
-                _trailTargetX[idx] = cx + (_rng.NextDouble() - 0.5) * 4;
-                _trailTargetY[idx] = baseY - _rng.NextDouble() * Math.Max(6, barH * 0.9);
-            }
-            _trailPx[idx] += (_trailTargetX[idx] - _trailPx[idx]) * 0.12;
-            _trailPy[idx] += (_trailTargetY[idx] - _trailPy[idx]) * 0.12;
-            Canvas.SetLeft(dot, _trailPx[idx] - dot.Width / 2);
-            Canvas.SetTop(dot, _trailPy[idx] - dot.Height / 2);
-            dot.Opacity = playing ? _trailOpacity[idx] * Math.Min(1, level * 5) : 0;
-        }
-    }
     private void BuildParticles()
     {
         _particles = new Ellipse[ParticleCount];
@@ -1382,7 +1323,6 @@ public partial class MainWindow : Window
             _visBars[i].Height = Math.Max(6, next * maxH);
             double reflH = Math.Max(20, VisReflectionGrid.ActualHeight - 8);
             _visReflectionBars[i].Height = Math.Max(6, next * reflH);
-            UpdateTrailParticle(i, next, playing);
         }
     }
 
