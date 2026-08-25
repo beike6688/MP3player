@@ -107,6 +107,7 @@ public class PlayerService : IDisposable
     private void OnPlaybackStopped(object? sender, StoppedEventArgs e)
     {
         if (_manualStop) return;
+        if (!ReferenceEquals(sender, _output)) return;
         PlaybackCompleted?.Invoke(this, EventArgs.Empty);
     }
 
