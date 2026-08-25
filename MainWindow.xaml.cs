@@ -700,8 +700,8 @@ public partial class MainWindow : Window
             }
             if (_currentIndex < _songs.Count - 1)
                 PlaySong(_currentIndex + 1);
-            else
-                UpdatePlaybackButtons();
+            else if (_songs.Count > 0)
+                PlaySong(0);
         });
     }
 
