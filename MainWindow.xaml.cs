@@ -152,6 +152,7 @@ public partial class MainWindow : Window
         }
 
         UpdateSeekUiFromPlayer();
+        StartHaloBreath();
 
         _timer.Start();
     }
@@ -178,6 +179,44 @@ public partial class MainWindow : Window
         }
         geo.Freeze();
         FramePath.Data = geo;
+    }
+
+    private void StartHaloBreath()
+    {
+        if (CdHalo == null) return;
+        var breath = new DoubleAnimation(0.6, 1.0, TimeSpan.FromSeconds(2.2))
+        {
+            AutoReverse = true,
+            RepeatBehavior = RepeatBehavior.Forever
+        };
+        CdHalo.BeginAnimation(OpacityProperty, breath);
+
+        CdHalo.RenderTransformOrigin = new Point(0.5, 0.5);
+        var scale = new ScaleTransform(1, 1);
+        CdHalo.RenderTransform = scale;
+        var sc = new DoubleAnimation(1, 1.04, TimeSpan.FromSeconds(2.2))
+        {
+            AutoReverse = true,
+            RepeatBehavior = RepeatBehavior.Forever
+        };
+        scale.BeginAnimation(ScaleTransform.ScaleXProperty, sc);
+        scale.BeginAnimation(ScaleTransform.ScaleYProperty, sc);
+
+        if (CdHalo.Effect is DropShadowEffect dse)
+        {
+            var glow = new DoubleAnimation(0.4, 0.9, TimeSpan.FromSeconds(2.2))
+            {
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever
+            };
+            dse.BeginAnimation(DropShadowEffect.OpacityProperty, glow);
+            var blur = new DoubleAnimation(20, 32, TimeSpan.FromSeconds(2.2))
+            {
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever
+            };
+            dse.BeginAnimation(DropShadowEffect.BlurRadiusProperty, blur);
+        }
     }
 
     private void ApplyWindowBounds()

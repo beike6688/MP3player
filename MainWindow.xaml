@@ -121,7 +121,7 @@
 
                         <Grid x:Name="CdContainer" Width="320" Height="320" ClipToBounds="True"
                               VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Ellipse Stroke="{StaticResource AccentGradientBrush}" StrokeThickness="3" Opacity="0.9" IsHitTestVisible="False">
+                            <Ellipse x:Name="CdHalo" Stroke="{StaticResource AccentGradientBrush}" StrokeThickness="3" Opacity="0.9" IsHitTestVisible="False">
                                 <Ellipse.Effect>
                                     <DropShadowEffect Color="#9B6BFF" BlurRadius="26" ShadowDepth="0" Opacity="0.7"/>
                                 </Ellipse.Effect>
