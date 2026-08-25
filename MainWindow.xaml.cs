@@ -70,6 +70,7 @@ public partial class MainWindow : Window
     private double[] _trailTargetY = Array.Empty<double>();
     private double[] _trailOpacity = Array.Empty<double>();
     private double[] _trailSize = Array.Empty<double>();
+    private double[][] _jagPatterns = Array.Empty<double[]>();
     private float[] _visLevels = Array.Empty<float>();
     private float[] _visTargets = Array.Empty<float>();
     private Ellipse[] _particles = Array.Empty<Ellipse>();
@@ -1152,6 +1153,7 @@ public partial class MainWindow : Window
         _visLevels = new float[VisBarCount];
         _visTargets = new float[VisBarCount];
         _trailParticles = new Ellipse[VisBarCount * 3];
+        _jagPatterns = new double[VisBarCount][];
         _trailPx = new double[VisBarCount * 3];
         _trailPy = new double[VisBarCount * 3];
         _trailTargetX = new double[VisBarCount * 3];
@@ -1162,6 +1164,14 @@ public partial class MainWindow : Window
 
         for (int i = 0; i < VisBarCount; i++)
         {
+            int jagN = 7;
+            var jag = new double[jagN];
+            for (int j = 0; j < jagN; j++)
+            {
+                double baseX = 3.6 - 3.0 * j / (jagN - 1);
+                jag[j] = Math.Clamp(baseX + (_rng.NextDouble() - 0.5) * 1.4, 0.5, 4.0);
+            }
+            _jagPatterns[i] = jag;
             double hue = 225 + (340 - 225) * i / (double)(VisBarCount - 1);
             var top = HsvToRgb(hue, 0.9, 1.0);
             var bottom = HsvToRgb(hue, 0.95, 0.38);
@@ -1223,20 +1233,30 @@ public partial class MainWindow : Window
         }
     }
 
-    private static StreamGeometry BuildBarGeometry(double h, bool upward)
+    private static StreamGeometry BuildBarGeometry(double h, bool upward, double[] jag)
     {
         var geo = new StreamGeometry();
         using (var ctx = geo.Open())
         {
-            double tip = Math.Min(9, h * 0.5);
-            double body = h - tip;
+            double tip = Math.Min(16, h * 0.55);
+            double body = Math.Max(0, h - tip);
+            int n = jag.Length;
             if (upward)
             {
                 ctx.BeginFigure(new Point(-4, 0), true, true);
                 ctx.LineTo(new Point(4, 0), true, false);
                 ctx.LineTo(new Point(4, -body), true, false);
-                ctx.LineTo(new Point(0.8, -h), true, false);
-                ctx.LineTo(new Point(-0.8, -h), true, false);
+                for (int k = 0; k < n; k++)
+                {
+                    double t = (k + 1) / (double)n;
+                    ctx.LineTo(new Point(jag[k], -(body + tip * t)), true, false);
+                }
+                ctx.LineTo(new Point(-0.5, -h), true, false);
+                for (int k = n - 1; k >= 0; k--)
+                {
+                    double t = (k + 1) / (double)n;
+                    ctx.LineTo(new Point(-jag[k], -(body + tip * t)), true, false);
+                }
                 ctx.LineTo(new Point(-4, -body), true, false);
             }
             else
@@ -1244,15 +1264,23 @@ public partial class MainWindow : Window
                 ctx.BeginFigure(new Point(-4, 0), true, true);
                 ctx.LineTo(new Point(4, 0), true, false);
                 ctx.LineTo(new Point(4, body), true, false);
-                ctx.LineTo(new Point(0.8, h), true, false);
-                ctx.LineTo(new Point(-0.8, h), true, false);
+                for (int k = 0; k < n; k++)
+                {
+                    double t = (k + 1) / (double)n;
+                    ctx.LineTo(new Point(jag[k], body + tip * t), true, false);
+                }
+                ctx.LineTo(new Point(-0.5, h), true, false);
+                for (int k = n - 1; k >= 0; k--)
+                {
+                    double t = (k + 1) / (double)n;
+                    ctx.LineTo(new Point(-jag[k], body + tip * t), true, false);
+                }
                 ctx.LineTo(new Point(-4, body), true, false);
             }
         }
         geo.Freeze();
         return geo;
     }
-
     private static Color HsvToRgb(double h, double s, double v)
     {
         double c = v * s;
@@ -1417,9 +1445,9 @@ public partial class MainWindow : Window
             }
             _visLevels[i] = next;
             double maxH = Math.Max(20, VisGrid.ActualHeight - 8);
-            _visBars[i].Data = BuildBarGeometry(Math.Max(5, next * maxH), true);
+            _visBars[i].Data = BuildBarGeometry(Math.Max(5, next * maxH), true, _jagPatterns[i]);
             double reflH = Math.Max(20, VisReflectionGrid.ActualHeight - 8);
-            _visReflectionBars[i].Data = BuildBarGeometry(Math.Max(5, next * reflH), false);
+            _visReflectionBars[i].Data = BuildBarGeometry(Math.Max(5, next * reflH), false, _jagPatterns[i]);
             UpdateTrailParticle(i, next, playing);
         }
     }
