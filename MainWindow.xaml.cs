@@ -61,8 +61,8 @@ public partial class MainWindow : Window
     private readonly Complex[] _fftBuffer = new Complex[FftSize];
     private readonly float[] _sampleBuffer = new float[FftSize];
     private readonly float[] _spectrum = new float[FftSize / 2];
-    private System.Windows.Shapes.Path[] _visBars = Array.Empty<System.Windows.Shapes.Path>();
-    private System.Windows.Shapes.Path[] _visReflectionBars = Array.Empty<System.Windows.Shapes.Path>();
+    private System.Windows.Shapes.Rectangle[] _visBars = Array.Empty<System.Windows.Shapes.Rectangle>();
+    private System.Windows.Shapes.Rectangle[] _visReflectionBars = Array.Empty<System.Windows.Shapes.Rectangle>();
     private Ellipse[] _trailParticles = Array.Empty<Ellipse>();
     private double[] _trailPx = Array.Empty<double>();
     private double[] _trailPy = Array.Empty<double>();
@@ -1148,8 +1148,8 @@ public partial class MainWindow : Window
         VisReflectionGrid.Children.Clear();
         ParticleCanvas.Children.Clear();
         TrailCanvas.Children.Clear();
-        _visBars = new System.Windows.Shapes.Path[VisBarCount];
-        _visReflectionBars = new System.Windows.Shapes.Path[VisBarCount];
+        _visBars = new System.Windows.Shapes.Rectangle[VisBarCount];
+        _visReflectionBars = new System.Windows.Shapes.Rectangle[VisBarCount];
         _visLevels = new float[VisBarCount];
         _visTargets = new float[VisBarCount];
         _trailParticles = new Ellipse[VisBarCount * 3];
@@ -1164,47 +1164,43 @@ public partial class MainWindow : Window
 
         for (int i = 0; i < VisBarCount; i++)
         {
-            int jagN = 7;
-            var jag = new double[jagN];
-            for (int j = 0; j < jagN; j++)
-            {
-                double baseX = 3.6 - 3.0 * j / (jagN - 1);
-                jag[j] = Math.Clamp(baseX + (_rng.NextDouble() - 0.5) * 1.4, 0.5, 4.0);
-            }
-            _jagPatterns[i] = jag;
-            double hue = 225 + (340 - 225) * i / (double)(VisBarCount - 1);
-            var top = HsvToRgb(hue, 0.9, 1.0);
-            var bottom = HsvToRgb(hue, 0.95, 0.38);
             var brush = new LinearGradientBrush
             {
-                StartPoint = new Point(0, 1),
-                EndPoint = new Point(0, 0)
+                StartPoint = new Point(0, 0),
+                EndPoint = new Point(0, 1)
             };
-            brush.GradientStops.Add(new GradientStop(bottom, 0));
-            brush.GradientStops.Add(new GradientStop(top, 1));
+            brush.GradientStops.Add(new GradientStop(Color.FromRgb(0, 102, 255), 0));
+            brush.GradientStops.Add(new GradientStop(Color.FromRgb(160, 32, 240), 0.5));
+            brush.GradientStops.Add(new GradientStop(Color.FromRgb(255, 85, 221), 1));
             var glow = new DropShadowEffect
             {
-                Color = top,
+                Color = Color.FromRgb(160, 32, 240),
                 BlurRadius = 20,
                 ShadowDepth = 0,
                 Opacity = 0.8
             };
 
-            var bar = new System.Windows.Shapes.Path
+            var bar = new System.Windows.Shapes.Rectangle
             {
                 Fill = brush,
                 Effect = glow,
-                Width = 8,
+                Width = 6,
+                Height = 6,
+                RadiusX = 2.5,
+                RadiusY = 2.5,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             _visBars[i] = bar;
             VisGrid.Children.Add(bar);
 
-            var refl = new System.Windows.Shapes.Path
+            var refl = new System.Windows.Shapes.Rectangle
             {
                 Fill = brush,
-                Width = 8,
+                Width = 6,
+                Height = 6,
+                RadiusX = 2.5,
+                RadiusY = 2.5,
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Center
             };
@@ -1224,57 +1220,13 @@ public partial class MainWindow : Window
                 {
                     Width = _trailSize[idx],
                     Height = _trailSize[idx],
-                    Fill = new SolidColorBrush(top),
+                    Fill = new SolidColorBrush(Color.FromRgb(160, 32, 240)),
                     IsHitTestVisible = false
                 };
                 _trailParticles[idx] = dot;
                 TrailCanvas.Children.Add(dot);
             }
         }
-    }
-
-    private static StreamGeometry BuildBarGeometry(double h, bool upward)
-    {
-        var geo = new StreamGeometry();
-        using (var ctx = geo.Open())
-        {
-            double tip = Math.Min(9, h * 0.5);
-            double body = h - tip;
-            if (upward)
-            {
-                ctx.BeginFigure(new Point(-4, 0), true, true);
-                ctx.LineTo(new Point(4, 0), true, false);
-                ctx.LineTo(new Point(4, -body), true, false);
-                ctx.LineTo(new Point(0.8, -h), true, false);
-                ctx.LineTo(new Point(-0.8, -h), true, false);
-                ctx.LineTo(new Point(-4, -body), true, false);
-            }
-            else
-            {
-                ctx.BeginFigure(new Point(-4, 0), true, true);
-                ctx.LineTo(new Point(4, 0), true, false);
-                ctx.LineTo(new Point(4, body), true, false);
-                ctx.LineTo(new Point(0.8, h), true, false);
-                ctx.LineTo(new Point(-0.8, h), true, false);
-                ctx.LineTo(new Point(-4, body), true, false);
-            }
-        }
-        geo.Freeze();
-        return geo;
-    }
-    private static Color HsvToRgb(double h, double s, double v)
-    {
-        double c = v * s;
-        double x = c * (1 - Math.Abs((h / 60.0) % 2 - 1));
-        double m = v - c;
-        double r, g, b;
-        if (h < 60) { r = c; g = x; b = 0; }
-        else if (h < 120) { r = x; g = c; b = 0; }
-        else if (h < 180) { r = 0; g = c; b = x; }
-        else if (h < 240) { r = 0; g = x; b = c; }
-        else if (h < 300) { r = x; g = 0; b = c; }
-        else { r = c; g = 0; b = x; }
-        return Color.FromRgb((byte)((r + m) * 255), (byte)((g + m) * 255), (byte)((b + m) * 255));
     }
 
     private void UpdateTrailParticle(int barIdx, float level, bool playing)
@@ -1426,9 +1378,9 @@ public partial class MainWindow : Window
             }
             _visLevels[i] = next;
             double maxH = Math.Max(20, VisGrid.ActualHeight - 8);
-            _visBars[i].Data = BuildBarGeometry(Math.Max(5, next * maxH), true);
+            _visBars[i].Height = Math.Max(6, next * maxH);
             double reflH = Math.Max(20, VisReflectionGrid.ActualHeight - 8);
-            _visReflectionBars[i].Data = BuildBarGeometry(Math.Max(5, next * reflH), false);
+            _visReflectionBars[i].Height = Math.Max(6, next * reflH);
             UpdateTrailParticle(i, next, playing);
         }
     }
