@@ -1246,9 +1246,9 @@ public partial class MainWindow : Window
             var glow = new DropShadowEffect
             {
                 Color = Color.FromRgb(160, 32, 240),
-                BlurRadius = 20,
+                BlurRadius = 7,
                 ShadowDepth = 0,
-                Opacity = 0.8
+                Opacity = 0.4
             };
 
             var bar = new System.Windows.Shapes.Rectangle

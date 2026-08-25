@@ -35,17 +35,9 @@
                     </Border.Background>
                 </Border>
                 <Ellipse Width="560" Height="560" HorizontalAlignment="Left" VerticalAlignment="Center"
-                         Margin="-170,0,0,0" Fill="{StaticResource PurpleGlowBrush}">
-                    <Ellipse.Effect>
-                        <BlurEffect Radius="80"/>
-                    </Ellipse.Effect>
-                </Ellipse>
+                         Margin="-170,0,0,0" Fill="{StaticResource PurpleGlowBrush}"/>
                 <Ellipse Width="640" Height="640" HorizontalAlignment="Right" VerticalAlignment="Center"
-                         Margin="0,0,-220,0" Fill="{StaticResource BlueGlowBrush}">
-                    <Ellipse.Effect>
-                        <BlurEffect Radius="100"/>
-                    </Ellipse.Effect>
-                </Ellipse>
+                         Margin="0,0,-220,0" Fill="{StaticResource BlueGlowBrush}"/>
 
                 <Image x:Name="BgCoverImage" Stretch="UniformToFill" Opacity="0.35">
                     <Image.Effect>
