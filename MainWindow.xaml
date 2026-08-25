@@ -16,7 +16,7 @@
     <Border x:Name="RootBorder" ClipToBounds="True"
             CornerRadius="24"
             Background="{StaticResource BgBrush}"
-            BorderBrush="#2AFFFFFF"
+            BorderBrush="#8CFFFFFF"
             BorderThickness="1">
         <Grid x:Name="RootContent">
             <Grid.Clip>
