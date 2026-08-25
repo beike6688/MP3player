@@ -1370,15 +1370,42 @@ public partial class MainWindow : Window
         }
     }
 
-    private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         if (e.ClickCount == 2)
         {
-            Maximize_Click(sender, e);
+            if (e.OriginalSource is DependencyObject d2 && !IsInteractiveElement(d2))
+            {
+                Maximize_Click(sender, e);
+                e.Handled = true;
+            }
             return;
         }
-        if (e.OriginalSource is Button) return;
+        if (e.OriginalSource is DependencyObject d && IsInteractiveElement(d)) return;
         try { DragMove(); } catch { }
+    }
+
+    private static bool IsInteractiveElement(DependencyObject node)
+    {
+        while (node != null)
+        {
+            if (node is System.Windows.Controls.Primitives.ButtonBase
+                or System.Windows.Controls.Primitives.Thumb
+                or System.Windows.Controls.Slider
+                or System.Windows.Controls.ProgressBar
+                or System.Windows.Controls.Primitives.ScrollBar
+                or System.Windows.Controls.Primitives.TextBoxBase
+                or System.Windows.Controls.ListBoxItem
+                or System.Windows.Controls.ListBox
+                or System.Windows.Controls.ComboBoxItem
+                or System.Windows.Controls.MenuItem
+                or System.Windows.Controls.ContextMenu
+                or System.Windows.Controls.CheckBox
+                or System.Windows.Controls.RadioButton)
+                return true;
+            node = System.Windows.Media.VisualTreeHelper.GetParent(node);
+        }
+        return false;
     }
 
     private void Minimize_Click(object sender, RoutedEventArgs e)

@@ -11,6 +11,7 @@
         ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
         Loaded="OnLoaded"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
         Closing="OnClosing">
 
     <Border x:Name="RootBorder" ClipToBounds="True"
@@ -62,8 +63,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- 顶栏 -->
-                <Grid Grid.Row="0" x:Name="TitleBar" Background="Transparent"
-                      MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid Grid.Row="0" x:Name="TitleBar" Background="Transparent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
