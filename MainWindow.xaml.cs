@@ -231,13 +231,15 @@ public partial class MainWindow : Window
         _stars = new Ellipse[StarCount];
         for (int i = 0; i < StarCount; i++)
         {
-            int r = 225 + _rng.Next(30);
-            int g = 230 + _rng.Next(25);
+            var starBrush = new RadialGradientBrush();
+            starBrush.GradientStops.Add(new GradientStop(Color.FromArgb(255, 255, 255, 255), 0));
+            starBrush.GradientStops.Add(new GradientStop(Color.FromArgb(180, 220, 235, 255), 0.35));
+            starBrush.GradientStops.Add(new GradientStop(Color.FromArgb(0, 200, 220, 255), 1));
             var star = new Ellipse
             {
-                Width = 1.3 + _rng.NextDouble() * 2.4,
-                Height = 1.3 + _rng.NextDouble() * 2.4,
-                Fill = new SolidColorBrush(Color.FromRgb((byte)r, (byte)g, 255)),
+                Width = 2.5 + _rng.NextDouble() * 3.5,
+                Height = 2.5 + _rng.NextDouble() * 3.5,
+                Fill = starBrush,
                 IsHitTestVisible = false
             };
             if (_rng.NextDouble() < 0.55)
