@@ -1165,7 +1165,13 @@ public partial class MainWindow : Window
             double hue = 225 + (340 - 225) * i / (double)(VisBarCount - 1);
             var top = HsvToRgb(hue, 0.9, 1.0);
             var bottom = HsvToRgb(hue, 0.95, 0.38);
-            var brush = new LinearGradientBrush(bottom, top, 90);
+            var brush = new LinearGradientBrush
+            {
+                StartPoint = new Point(0, 1),
+                EndPoint = new Point(0, 0)
+            };
+            brush.GradientStops.Add(new GradientStop(bottom, 0));
+            brush.GradientStops.Add(new GradientStop(top, 1));
             var glow = new DropShadowEffect
             {
                 Color = top,
