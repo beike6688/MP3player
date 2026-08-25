@@ -161,7 +161,7 @@ public partial class MainWindow : Window
         double w = RootBorder.ActualWidth;
         double h = RootBorder.ActualHeight;
         if (w <= 0 || h <= 0 || FramePath == null) return;
-        double r = 24;
+        double r = 8;
         double i = 0.5;
         var geo = new StreamGeometry();
         using (var ctx = geo.Open())
@@ -1462,12 +1462,12 @@ public partial class MainWindow : Window
                     });
                 }
             }
-            RootBorder.CornerRadius = new CornerRadius(24);
+            RootBorder.CornerRadius = new CornerRadius(8);
             RootBorder.BorderThickness = new Thickness(1);
             if (RootClipGeometry != null)
             {
-                RootClipGeometry.RadiusX = 24;
-                RootClipGeometry.RadiusY = 24;
+                RootClipGeometry.RadiusX = 8;
+                RootClipGeometry.RadiusY = 8;
                 RootClipGeometry.Rect = new Rect(0, 0, RootBorder.ActualWidth, RootBorder.ActualHeight);
             }
             FramePath.Visibility = Visibility.Visible;

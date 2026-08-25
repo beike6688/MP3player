@@ -14,13 +14,13 @@
         Closing="OnClosing">
 
     <Border x:Name="RootBorder" ClipToBounds="True"
-            CornerRadius="24"
+            CornerRadius="8"
             Background="{StaticResource BgBrush}"
             BorderBrush="#2AFFFFFF"
             BorderThickness="0">
         <Grid x:Name="RootContent">
             <Grid.Clip>
-                <RectangleGeometry x:Name="RootClipGeometry" RadiusX="24" RadiusY="24"/>
+                <RectangleGeometry x:Name="RootClipGeometry" RadiusX="8" RadiusY="8"/>
             </Grid.Clip>
             <!-- ========== 背景层：渐变 + 霓虹光晕 + 封面模糊 ========== -->
             <Grid x:Name="BgLayer" IsHitTestVisible="False">
