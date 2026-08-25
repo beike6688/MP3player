@@ -158,48 +158,79 @@
                             <Grid x:Name="ToneArmContainer" Width="120" Height="174"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
                                   Margin="0,8,-4,0" IsHitTestVisible="False"
-                                  RenderTransformOrigin="0.9,0.98">
+                                  RenderTransformOrigin="0.9,0.96">
                                 <Grid.RenderTransform>
                                     <RotateTransform x:Name="ToneArmRotate" Angle="-26"/>
                                 </Grid.RenderTransform>
-                                <!-- 主臂杆（金属渐变弧形） -->
-                                <Path Data="M102,168 C76,142 58,108 40,60 L30,54 C46,106 68,140 94,166 Z"
-                                      HorizontalAlignment="Left" VerticalAlignment="Top"
-                                      Stroke="#8B93A8" StrokeThickness="0.8">
+                                <!-- 支架立柱 -->
+                                <Rectangle Width="9" Height="46" RadiusX="4.5" RadiusY="4.5"
+                                          HorizontalAlignment="Left" VerticalAlignment="Top"
+                                          Canvas.Left="103" Canvas.Top="120">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Color="#3A4256" Offset="0"/>
+                                            <GradientStop Color="#D9E2F5" Offset="0.5"/>
+                                            <GradientStop Color="#454F66" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <!-- 万向节球 -->
+                                <Ellipse Width="12" Height="12" Fill="#0F1524" Stroke="#C8D2E6" StrokeThickness="1.2"
+                                         HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="101.5" Canvas.Top="110"/>
+                                <!-- 主臂（细长金属弧形杆） -->
+                                <Path Data="M108,116 C86,114 64,96 44,66 L37,72 C58,104 86,122 106,124 Z"
+                                      HorizontalAlignment="Left" VerticalAlignment="Top">
                                     <Path.Fill>
-                                        <LinearGradientBrush StartPoint="0.2,0" EndPoint="0.8,1">
-                                            <GradientStop Color="#2A3040" Offset="0"/>
-                                            <GradientStop Color="#5A6479" Offset="0.45"/>
-                                            <GradientStop Color="#C8D2E6" Offset="0.55"/>
-                                            <GradientStop Color="#39404F" Offset="1"/>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#F2F6FF" Offset="0"/>
+                                            <GradientStop Color="#9AA5BE" Offset="0.45"/>
+                                            <GradientStop Color="#4A5568" Offset="1"/>
                                         </LinearGradientBrush>
                                     </Path.Fill>
                                 </Path>
-                                <!-- 杆上部高光 -->
-                                <Path Data="M100,166 C74,140 57,106 39,59 L36,57 C53,107 71,139 95,161 Z"
+                                <!-- 杆下缘暗部 -->
+                                <Path Data="M105,122 C84,120 60,102 40,71 L38,69 C58,100 82,118 103,120 Z"
                                       HorizontalAlignment="Left" VerticalAlignment="Top"
-                                      Fill="#66FFFFFF" Opacity="0.3"/>
-                                <!-- 唱针头（流线型） -->
-                                <Path Data="M42,64 L20,56 L13,48 L18,40 L32,40 L46,54 Z"
+                                      Fill="#1A2130" Opacity="0.5"/>
+                                <!-- 黄铜配重块 -->
+                                <Ellipse Width="13" Height="13" Fill="#B8860B" Stroke="#F5D06B" StrokeThickness="0.8"
+                                         HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="68" Canvas.Top="88"/>
+                                <Rectangle Width="8" Height="15" RadiusX="3" RadiusY="3"
+                                          HorizontalAlignment="Left" VerticalAlignment="Top"
+                                          Canvas.Left="70.5" Canvas.Top="98">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                            <GradientStop Color="#8A6508" Offset="0"/>
+                                            <GradientStop Color="#F5D06B" Offset="0.5"/>
+                                            <GradientStop Color="#7A5A08" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                                <!-- 复古唱头壳（圆润胶囊） -->
+                                <Path Data="M48,72 C38,78 24,76 20,64 C17,54 24,44 36,42 C46,40 56,48 56,58 C56,66 53,69 48,72 Z"
                                       HorizontalAlignment="Left" VerticalAlignment="Top"
-                                      Fill="#1C2233">
+                                      Fill="#20263A">
                                     <Path.Effect>
-                                        <DropShadowEffect Color="#000000" BlurRadius="4" ShadowDepth="1" Opacity="0.5"/>
+                                        <DropShadowEffect Color="#000000" BlurRadius="5" ShadowDepth="1" Opacity="0.55"/>
                                     </Path.Effect>
                                 </Path>
-                                <Path Data="M42,64 L20,56 L13,48 L18,40 L32,40 L46,54 Z"
+                                <Path Data="M48,72 C38,78 24,76 20,64 C17,54 24,44 36,42 C46,40 56,48 56,58 C56,66 53,69 48,72 Z"
                                       HorizontalAlignment="Left" VerticalAlignment="Top"
-                                      Stroke="#4E8CFF" StrokeThickness="0.8" Fill="Transparent" Opacity="0.55"/>
-                                <!-- 唱针 -->
-                                <Path Data="M13,48 L7,37 L15,41 Z" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                      Fill="#C8D2E6"/>
-                                <!-- 支架底座 -->
-                                <Ellipse Width="26" Height="26" Fill="#141A28" Stroke="#FFFFFF33" StrokeThickness="1"
-                                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
-                                <Ellipse Width="26" Height="26" Stroke="#9B6BFF" StrokeThickness="1.2" Opacity="0.45"
-                                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
-                                <Ellipse Width="10" Height="10" Fill="#2A3140" Stroke="#8B93A8" StrokeThickness="1"
-                                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="8,8,8,8"/>
+                                      Stroke="#9B6BFF" StrokeThickness="1" Fill="Transparent" Opacity="0.65"/>
+                                <!-- 唱头壳顶部高光 -->
+                                <Path Data="M46,66 C40,70 30,69 27,61 C25,55 29,48 36,47 C42,46 49,51 49,57 C49,62 48,64 46,66 Z"
+                                      HorizontalAlignment="Left" VerticalAlignment="Top"
+                                      Fill="#55FFFFFF" Opacity="0.4"/>
+                                <!-- 复古唱针 -->
+                                <Path Data="M22,62 L15,52 L24,56 Z" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                      Fill="#E8EDFB" Stroke="#8B93A8" StrokeThickness="0.5"/>
+                                <!-- 支架底座（发光） -->
+                                <Ellipse Width="28" Height="28" Fill="#121826" Stroke="#FFFFFF33" StrokeThickness="1"
+                                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,0"/>
+                                <Ellipse Width="28" Height="28" Stroke="#9B6BFF" StrokeThickness="1.3" Opacity="0.5"
+                                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,0"/>
+                                <Ellipse Width="14" Height="14" Fill="#2A3140" Stroke="#C8D2E6" StrokeThickness="1"
+                                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="7,7,7,7"/>
                             </Grid>
                         </Grid>
 
