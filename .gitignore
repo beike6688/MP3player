@@ -1,0 +1,24 @@
+# 构建产物
+bin/
+obj/
+publish/
+
+# 开发工具链（SDK、NuGet 缓存、CLI 配置）
+.dotnet/
+.dotnet-cli/
+.nuget/
+
+# 开发辅助工具
+.tools/
+
+# 测试数据与截图
+testdata/
+*.png
+
+# IDE / 系统
+.vs/
+.idea/
+*.user
+*.suo
+Thumbs.db
+*.log

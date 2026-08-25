@@ -1,0 +1,343 @@
+<Application x:Class="Mp3Player.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Mp3Player.Controls">
+    <Application.Resources>
+
+        <!-- 基础色板 -->
+        <SolidColorBrush x:Key="BgBrush" Color="#080B18"/>
+        <SolidColorBrush x:Key="PanelBrush" Color="#11182D"/>
+        <SolidColorBrush x:Key="PanelLightBrush" Color="#1B2338"/>
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#E8EDFB"/>
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#8A90A8"/>
+        <SolidColorBrush x:Key="TextDimBrush" Color="#5A6479"/>
+
+        <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#4E8CFF" Offset="0"/>
+            <GradientStop Color="#9B6BFF" Offset="0.5"/>
+            <GradientStop Color="#FF5FA2" Offset="1"/>
+        </LinearGradientBrush>
+
+        <RadialGradientBrush x:Key="CdShineBrush" Center="0.35,0.3" GradientOrigin="0.35,0.3" RadiusX="0.9" RadiusY="0.9">
+            <GradientStop Color="#55FFFFFF" Offset="0"/>
+            <GradientStop Color="#00FFFFFF" Offset="0.35"/>
+            <GradientStop Color="#22000000" Offset="1"/>
+        </RadialGradientBrush>
+
+        <RadialGradientBrush x:Key="PurpleGlowBrush">
+            <GradientStop Color="#268A2BE2" Offset="0"/>
+            <GradientStop Color="#008A2BE2" Offset="1"/>
+        </RadialGradientBrush>
+
+        <RadialGradientBrush x:Key="BlueGlowBrush">
+            <GradientStop Color="#1A0066FF" Offset="0"/>
+            <GradientStop Color="#000066FF" Offset="1"/>
+        </RadialGradientBrush>
+
+        <!-- 窗口标题栏按钮 -->
+        <Style x:Key="CaptionButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Foreground" Value="#C6CDE0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#22FFFFFF"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#33FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E81123"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 通用图标按钮 -->
+        <Style x:Key="IconButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Foreground" Value="#AEB8D0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="Transparent" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#1FFFFFFF"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#33FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 大播放/暂停按钮 -->
+        <Style x:Key="PlayButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Height" Value="80"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Ellipse x:Name="Halo" Fill="#1A9B6BFF"/>
+                            <Ellipse x:Name="Glow" Width="62" Height="62">
+                                <Ellipse.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#4E8CFF" Offset="0"/>
+                                        <GradientStop Color="#9B6BFF" Offset="0.55"/>
+                                        <GradientStop Color="#FF5FA2" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Ellipse.Fill>
+                                <Ellipse.Effect>
+                                    <DropShadowEffect Color="#9B6BFF" BlurRadius="24" ShadowDepth="0" Opacity="0.75"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Glow" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#FF5FA2" BlurRadius="34" ShadowDepth="0" Opacity="0.9"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Glow" Property="Opacity" Value="0.82"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 进度条 / 音量条（渐变填充） -->
+        <Style x:Key="SeekProgressStyle" TargetType="ProgressBar">
+            <Setter Property="Height" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid>
+                            <Border x:Name="PART_Track" CornerRadius="2.5" Background="#1F2A3F"/>
+                            <Border x:Name="PART_Indicator" CornerRadius="2.5" HorizontalAlignment="Left">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#4E8CFF" Offset="0"/>
+                                        <GradientStop Color="#9B6BFF" Offset="0.55"/>
+                                        <GradientStop Color="#FF5FA2" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#9B6BFF" BlurRadius="8" ShadowDepth="0" Opacity="0.7"/>
+                                </Border.Effect>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="VolumeProgressStyle" TargetType="ProgressBar" BasedOn="{StaticResource SeekProgressStyle}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid>
+                            <Border x:Name="PART_Track" CornerRadius="2" Background="#1F2A3F"/>
+                            <Border x:Name="PART_Indicator" CornerRadius="2" HorizontalAlignment="Left" Background="#C9D4F5"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 透明滑块（覆盖在进度条上接收拖拽） -->
+        <Style x:Key="TransparentSliderStyle" TargetType="Slider">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="Transparent"/>
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="IsMoveToPointEnabled" Value="True"/>
+        </Style>
+
+        <!-- 播放列表项 -->
+        <Style x:Key="PlaylistItemStyle" TargetType="ListBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Bd" CornerRadius="9" Background="Transparent" Padding="0">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#1A2138"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#232C4A"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 滚动条 -->
+        <Style x:Key="DarkScrollBarStyle" TargetType="ScrollBar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Width" Value="8"/>
+            <Setter Property="MinWidth" Value="8"/>
+            <Setter Property="MaxWidth" Value="8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid x:Name="RootGrid" Background="Transparent">
+                            <Border x:Name="TrackBg" Width="2" CornerRadius="1" Background="#14FFFFFF"
+                                    HorizontalAlignment="Center" Margin="0,3"/>
+                            <Track x:Name="PART_Track" IsDirectionReversed="True" Margin="0,3">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageUpCommand" Opacity="0"
+                                                  Focusable="False" IsTabStop="False"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Grid x:Name="RootBd" ClipToBounds="False">
+                                                    <Border x:Name="ThumbBd" CornerRadius="3" Background="#50FFFFFF"
+                                                            Width="6" Height="42"
+                                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Grid>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="ThumbBd" Property="Background" Value="#75FFFFFF"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="ScrollBar.PageDownCommand" Opacity="0"
+                                                  Focusable="False" IsTabStop="False"/>
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Orientation" Value="Horizontal">
+                                <Setter TargetName="TrackBg" Property="Width" Value="Auto"/>
+                                <Setter TargetName="TrackBg" Property="Height" Value="2"/>
+                                <Setter TargetName="TrackBg" Property="HorizontalAlignment" Value="Stretch"/>
+                                <Setter TargetName="TrackBg" Property="VerticalAlignment" Value="Center"/>
+                                <Setter TargetName="TrackBg" Property="Margin" Value="2,0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Width" Value="Auto"/>
+                    <Setter Property="Height" Value="5"/>
+                    <Setter Property="MinHeight" Value="8"/>
+                    <Setter Property="MaxHeight" Value="8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 细长滚动条（代码控制滑块长度，最小 42px） -->
+        <Style TargetType="controls:SlimScrollBar">
+            <Setter Property="Width" Value="8"/>
+            <Setter Property="MinWidth" Value="8"/>
+            <Setter Property="MaxWidth" Value="8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="controls:SlimScrollBar">
+                        <Grid Background="Transparent">
+                            <Border Width="2" CornerRadius="1" Background="#14FFFFFF"
+                                    HorizontalAlignment="Center" Margin="0,4"/>
+                            <Thumb x:Name="PART_SlimThumb" Width="6" Height="42"
+                                   HorizontalAlignment="Center" VerticalAlignment="Top"
+                                   Focusable="False" IsTabStop="False">
+                                <Thumb.Template>
+                                    <ControlTemplate TargetType="Thumb">
+                                        <Border x:Name="ThumbBd" CornerRadius="3" Background="#50FFFFFF"/>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="ThumbBd" Property="Background" Value="#75FFFFFF"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Thumb.Template>
+                            </Thumb>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Height" Value="8"/>
+                    <Setter Property="MinHeight" Value="8"/>
+                    <Setter Property="MaxHeight" Value="8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 播放列表（自定义模板，强制使用细长滚动条） -->
+        <Style x:Key="PlaylistListBoxStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
+                            <ScrollViewer.Template>
+                                <ControlTemplate TargetType="ScrollViewer">
+                                    <Grid Background="Transparent">
+                                        <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                                                CanContentScroll="{TemplateBinding CanContentScroll}"
+                                                                Margin="{TemplateBinding Padding}"/>
+                                        <controls:SlimScrollBar x:Name="PART_VerticalScrollBar"
+                                                                Orientation="Vertical"
+                                                                Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                                                HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </ScrollViewer.Template>
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Application.Resources>
+</Application>
