@@ -96,6 +96,11 @@ public partial class MainWindow : Window
     public MainWindow(List<string>? startFiles = null)
     {
         InitializeComponent();
+        RootBorder.SizeChanged += (_, _) =>
+        {
+            if (RootClipGeometry != null)
+                RootClipGeometry.Rect = new Rect(0, 0, RootBorder.ActualWidth, RootBorder.ActualHeight);
+        };
         _startFiles = startFiles;
         _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
         _timer.Tick += Timer_Tick;
@@ -167,7 +172,15 @@ public partial class MainWindow : Window
 
     private void InitTray()
     {
-        _appIcon = CreateAppIcon();
+        try
+        {
+            using var stream = Application.GetResourceStream(new Uri("pack://application:,,,/Assets/app.ico")).Stream;
+            _appIcon = new System.Drawing.Icon(stream, 32, 32);
+        }
+        catch
+        {
+            _appIcon = CreateAppIcon();
+        }
 
 
         _trayIcon = new WinForms.NotifyIcon
@@ -1378,18 +1391,27 @@ public partial class MainWindow : Window
 
     private void Close_Click(object sender, RoutedEventArgs e) => HideToTray();
 
-    private void MainWindow_StateChanged(object? sender, EventArgs e)
+        private void MainWindow_StateChanged(object? sender, EventArgs e)
     {
         _isMaximized = WindowState == WindowState.Maximized;
         if (_isMaximized)
         {
             var wa = SystemParameters.WorkArea;
-            Left = wa.Left;
-            Top = wa.Top;
-            Width = wa.Width;
-            Height = wa.Height;
+            Dispatcher.BeginInvoke(() =>
+            {
+                Left = wa.Left;
+                Top = wa.Top;
+                Width = wa.Width;
+                Height = wa.Height;
+            });
             RootBorder.CornerRadius = new CornerRadius(0);
             RootBorder.BorderThickness = new Thickness(0);
+            if (RootClipGeometry != null)
+            {
+                RootClipGeometry.RadiusX = 0;
+                RootClipGeometry.RadiusY = 0;
+                RootClipGeometry.Rect = new Rect(0, 0, RootBorder.ActualWidth, RootBorder.ActualHeight);
+            }
             MaximizeIcon.Data = Geometry.Parse("M5,8 H16 V19 H5 Z M8,5 H19 V16 H17 V7 H8 Z");
         }
         else
@@ -1398,21 +1420,29 @@ public partial class MainWindow : Window
             {
                 BeginAnimation(OpacityProperty, null);
                 Opacity = 1;
-                if (_normalBounds.Width > 0 && !_isMaximized)
+                var nb = _normalBounds;
+                if (nb.Width > 0 && !_isMaximized)
                 {
-                    Left = _normalBounds.X;
-                    Top = _normalBounds.Y;
-                    Width = _normalBounds.Width;
-                    Height = _normalBounds.Height;
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        Left = nb.X;
+                        Top = nb.Y;
+                        Width = nb.Width;
+                        Height = nb.Height;
+                    });
                 }
             }
-            RootBorder.CornerRadius = new CornerRadius(14);
+            RootBorder.CornerRadius = new CornerRadius(16);
             RootBorder.BorderThickness = new Thickness(1);
+            if (RootClipGeometry != null)
+            {
+                RootClipGeometry.RadiusX = 16;
+                RootClipGeometry.RadiusY = 16;
+                RootClipGeometry.Rect = new Rect(0, 0, RootBorder.ActualWidth, RootBorder.ActualHeight);
+            }
             MaximizeIcon.Data = Geometry.Parse("M6,6 H18 V18 H6 Z M8,8 H16 V16 H8 Z");
         }
-
     }
-
     private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
         if (msg == WM_NCHITTEST && !_isMaximized)
