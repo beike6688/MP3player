@@ -22,3 +22,5 @@ testdata/
 *.suo
 Thumbs.db
 *.log
+
+publish-single/
