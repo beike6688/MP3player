@@ -556,11 +556,6 @@ public partial class MainWindow : Window
     private void Prev()
     {
         if (_songs.Count == 0) return;
-        if (_player.HasTrack && _player.Position.TotalSeconds > 3)
-        {
-            _player.Seek(TimeSpan.Zero);
-            return;
-        }
         int idx = _playMode == 2
             ? (_songs.Count > 1 ? NextRandom() : 0)
             : (_currentIndex <= 0 ? _songs.Count - 1 : _currentIndex - 1);
@@ -1445,8 +1440,8 @@ public partial class MainWindow : Window
             RootBorder.BorderThickness = new Thickness(1);
             if (RootClipGeometry != null)
             {
-                RootClipGeometry.RadiusX = 32;
-                RootClipGeometry.RadiusY = 32;
+                RootClipGeometry.RadiusX = 24;
+                RootClipGeometry.RadiusY = 24;
                 RootClipGeometry.Rect = new Rect(0, 0, RootBorder.ActualWidth, RootBorder.ActualHeight);
             }
             MaximizeIcon.Data = Geometry.Parse("M6,6 H18 V18 H6 Z M8,8 H16 V16 H8 Z");
