@@ -149,6 +149,10 @@ public partial class MainWindow : Window
         UpdateSeekUiFromPlayer();
         BuildStars();
         StartHaloBreath();
+        ShowVisualizerCheck.IsChecked = _settings.ShowVisualizer;
+        ShowStarsCheck.IsChecked = _settings.ShowStars;
+        ApplyVisualizerVisibility();
+        ApplyStarsVisibility();
 
         _timer.Start();
     }
@@ -899,6 +903,47 @@ public partial class MainWindow : Window
         ModeMenuPanel.Visibility = Visibility.Collapsed;
     }
 
+    private void SettingsButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (SettingsPanel.Visibility == Visibility.Visible)
+        {
+            SettingsPanel.Visibility = Visibility.Collapsed;
+            return;
+        }
+        SettingsPanel.Visibility = Visibility.Visible;
+        SettingsPanel.UpdateLayout();
+        var p = SettingsButton.TranslatePoint(new Point(0, 0), this);
+        SettingsPanel.Margin = new Thickness(Math.Max(0, p.X - SettingsPanel.ActualWidth + SettingsButton.ActualWidth), Math.Max(0, p.Y - SettingsPanel.ActualHeight - 6), 0, 0);
+    }
+
+    private void VisualizerCheck_Click(object sender, RoutedEventArgs e)
+    {
+        _settings.ShowVisualizer = ShowVisualizerCheck.IsChecked == true;
+        ApplyVisualizerVisibility();
+        _settingsDirty = true;
+        SaveSettings();
+    }
+
+    private void StarsCheck_Click(object sender, RoutedEventArgs e)
+    {
+        _settings.ShowStars = ShowStarsCheck.IsChecked == true;
+        ApplyStarsVisibility();
+        _settingsDirty = true;
+        SaveSettings();
+    }
+
+    private void ApplyVisualizerVisibility()
+    {
+        var v = _settings.ShowVisualizer ? Visibility.Visible : Visibility.Collapsed;
+        VisGrid.Visibility = v;
+        VisReflectionGrid.Visibility = v;
+    }
+
+    private void ApplyStarsVisibility()
+    {
+        StarCanvas.Visibility = _settings.ShowStars ? Visibility.Visible : Visibility.Collapsed;
+    }
+
     private void ShowModeMenu()
     {
         ModeMenuPanel.Visibility = Visibility.Visible;
@@ -910,10 +955,18 @@ public partial class MainWindow : Window
 
     private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
     {
-        if (ModeMenuPanel.Visibility != Visibility.Visible) return;
-        var p = e.GetPosition(ModeMenuPanel);
-        if (p.X < 0 || p.Y < 0 || p.X > ModeMenuPanel.ActualWidth || p.Y > ModeMenuPanel.ActualHeight)
-            ModeMenuPanel.Visibility = Visibility.Collapsed;
+        if (ModeMenuPanel.Visibility == Visibility.Visible)
+        {
+            var p = e.GetPosition(ModeMenuPanel);
+            if (p.X < 0 || p.Y < 0 || p.X > ModeMenuPanel.ActualWidth || p.Y > ModeMenuPanel.ActualHeight)
+                ModeMenuPanel.Visibility = Visibility.Collapsed;
+        }
+        if (SettingsPanel.Visibility == Visibility.Visible)
+        {
+            var p2 = e.GetPosition(SettingsPanel);
+            if (p2.X < 0 || p2.Y < 0 || p2.X > SettingsPanel.ActualWidth || p2.Y > SettingsPanel.ActualHeight)
+                SettingsPanel.Visibility = Visibility.Collapsed;
+        }
     }
 
     private void SetPlayMode(int mode)

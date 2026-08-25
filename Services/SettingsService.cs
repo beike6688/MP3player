@@ -15,6 +15,8 @@ public class AppSettings
     public double WindowWidth { get; set; } = 1200;
     public double WindowHeight { get; set; } = 760;
     public float[] Equalizer { get; set; } = new float[EqualizerSampleProvider.BandCount];
+    public bool ShowVisualizer { get; set; } = true;
+    public bool ShowStars { get; set; } = true;
 }
 
 public static class SettingsService
