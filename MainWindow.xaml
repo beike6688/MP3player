@@ -157,7 +157,7 @@
                             <!-- 唱臂（最上层，根部在容器内） -->
                             <Grid x:Name="ToneArmContainer" Width="120" Height="174"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
-                                  Margin="0,8,-4,0" IsHitTestVisible="False"
+                                  Margin="0,8,12,0" IsHitTestVisible="False"
                                   RenderTransformOrigin="0.9,0.98">
                                 <Grid.RenderTransform>
                                     <RotateTransform x:Name="ToneArmRotate" Angle="-26"/>
