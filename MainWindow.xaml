@@ -53,7 +53,7 @@
                     </Image.Effect>
                 </Image>
                 <Border Background="#B3080B18"/>
-                <Canvas x:Name="StarCanvas" IsHitTestVisible="False"/>
+                <Canvas x:Name="StarCanvas" IsHitTestVisible="False" Opacity="0.6"/>
             </Grid>
 
             <!-- ========== 内容层 ========== -->
