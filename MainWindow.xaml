@@ -155,30 +155,51 @@
                             </Grid>
 
                             <!-- 唱臂（最上层，根部在容器内） -->
-                            <Grid x:Name="ToneArmContainer" Width="118" Height="172"
+                            <Grid x:Name="ToneArmContainer" Width="120" Height="174"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
                                   Margin="0,8,-4,0" IsHitTestVisible="False"
-                                  RenderTransformOrigin="0.9,1">
+                                  RenderTransformOrigin="0.9,0.98">
                                 <Grid.RenderTransform>
                                     <RotateTransform x:Name="ToneArmRotate" Angle="-26"/>
                                 </Grid.RenderTransform>
-                                <Border Width="6" Height="116" CornerRadius="3"
-                                        HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                        Margin="0,0,32,4">
-                                    <Border.Background>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                            <GradientStop Color="#3A4256" Offset="0"/>
-                                            <GradientStop Color="#D9E2F5" Offset="0.35"/>
-                                            <GradientStop Color="#454F66" Offset="0.7"/>
-                                            <GradientStop Color="#7B8498" Offset="1"/>
+                                <!-- 主臂杆（金属渐变弧形） -->
+                                <Path Data="M102,168 C76,142 58,108 40,60 L30,54 C46,106 68,140 94,166 Z"
+                                      HorizontalAlignment="Left" VerticalAlignment="Top"
+                                      Stroke="#8B93A8" StrokeThickness="0.8">
+                                    <Path.Fill>
+                                        <LinearGradientBrush StartPoint="0.2,0" EndPoint="0.8,1">
+                                            <GradientStop Color="#2A3040" Offset="0"/>
+                                            <GradientStop Color="#5A6479" Offset="0.45"/>
+                                            <GradientStop Color="#C8D2E6" Offset="0.55"/>
+                                            <GradientStop Color="#39404F" Offset="1"/>
                                         </LinearGradientBrush>
-                                    </Border.Background>
-                                </Border>
-                                <Path Data="M0,0 H30 L26,24 H4 Z" Fill="#242B3C"
-                                      HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                      Margin="0,0,8,2" Width="30" Height="24"/>
-                                <Ellipse Width="16" Height="16" Fill="#1A2030" Stroke="#FFFFFF44" StrokeThickness="1"
-                                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,2,2"/>
+                                    </Path.Fill>
+                                </Path>
+                                <!-- 杆上部高光 -->
+                                <Path Data="M100,166 C74,140 57,106 39,59 L36,57 C53,107 71,139 95,161 Z"
+                                      HorizontalAlignment="Left" VerticalAlignment="Top"
+                                      Fill="#66FFFFFF" Opacity="0.3"/>
+                                <!-- 唱针头（流线型） -->
+                                <Path Data="M42,64 L20,56 L13,48 L18,40 L32,40 L46,54 Z"
+                                      HorizontalAlignment="Left" VerticalAlignment="Top"
+                                      Fill="#1C2233">
+                                    <Path.Effect>
+                                        <DropShadowEffect Color="#000000" BlurRadius="4" ShadowDepth="1" Opacity="0.5"/>
+                                    </Path.Effect>
+                                </Path>
+                                <Path Data="M42,64 L20,56 L13,48 L18,40 L32,40 L46,54 Z"
+                                      HorizontalAlignment="Left" VerticalAlignment="Top"
+                                      Stroke="#4E8CFF" StrokeThickness="0.8" Fill="Transparent" Opacity="0.55"/>
+                                <!-- 唱针 -->
+                                <Path Data="M13,48 L7,37 L15,41 Z" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                      Fill="#C8D2E6"/>
+                                <!-- 支架底座 -->
+                                <Ellipse Width="26" Height="26" Fill="#141A28" Stroke="#FFFFFF33" StrokeThickness="1"
+                                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
+                                <Ellipse Width="26" Height="26" Stroke="#9B6BFF" StrokeThickness="1.2" Opacity="0.45"
+                                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
+                                <Ellipse Width="10" Height="10" Fill="#2A3140" Stroke="#8B93A8" StrokeThickness="1"
+                                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="8,8,8,8"/>
                             </Grid>
                         </Grid>
 
