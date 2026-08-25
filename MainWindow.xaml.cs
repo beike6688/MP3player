@@ -65,12 +65,6 @@ public partial class MainWindow : Window
     private System.Windows.Shapes.Rectangle[] _visReflectionBars = Array.Empty<System.Windows.Shapes.Rectangle>();
     private float[] _visLevels = Array.Empty<float>();
     private float[] _visTargets = Array.Empty<float>();
-    private Ellipse[] _particles = Array.Empty<Ellipse>();
-    private double[] _pX = Array.Empty<double>();
-    private double[] _pY = Array.Empty<double>();
-    private double[] _pVx = Array.Empty<double>();
-    private double[] _pVy = Array.Empty<double>();
-    private const int ParticleCount = 14;
 
     private bool _settingsDirty;
     private DateTime _lastAutoSave = DateTime.Now;
@@ -1221,7 +1215,6 @@ public partial class MainWindow : Window
         {
             UpdateVisualizer(0);
         }
-        UpdateParticles();
         _miniWindow?.Sync(_player.IsPlaying, _player.Position, _player.Length);
 
         if (_settingsDirty && DateTime.Now - _lastAutoSave > TimeSpan.FromSeconds(5))
@@ -1235,12 +1228,10 @@ public partial class MainWindow : Window
     {
         VisGrid.Children.Clear();
         VisReflectionGrid.Children.Clear();
-        ParticleCanvas.Children.Clear();
         _visBars = new System.Windows.Shapes.Rectangle[VisBarCount];
         _visReflectionBars = new System.Windows.Shapes.Rectangle[VisBarCount];
         _visLevels = new float[VisBarCount];
         _visTargets = new float[VisBarCount];
-        BuildParticles();
 
         for (int i = 0; i < VisBarCount; i++)
         {
@@ -1288,65 +1279,6 @@ public partial class MainWindow : Window
             VisReflectionGrid.Children.Add(refl);
 
 }
-    }
-
-    private void BuildParticles()
-    {
-        _particles = new Ellipse[ParticleCount];
-        _pX = new double[ParticleCount];
-        _pY = new double[ParticleCount];
-        _pVx = new double[ParticleCount];
-        _pVy = new double[ParticleCount];
-        for (int i = 0; i < ParticleCount; i++)
-        {
-            var dot = new Ellipse
-            {
-                Width = 2.5,
-                Height = 2.5,
-                Fill = new SolidColorBrush(Color.FromArgb(150, 160, 190, 255)),
-                Effect = new DropShadowEffect
-                {
-                    Color = Color.FromRgb(120, 80, 255),
-                    BlurRadius = 6,
-                    ShadowDepth = 0,
-                    Opacity = 0.8
-                }
-            };
-            ParticleCanvas.Children.Add(dot);
-            _particles[i] = dot;
-            _pX[i] = _rng.NextDouble() * 520;
-            _pY[i] = _rng.NextDouble() * 160;
-            _pVx[i] = (_rng.NextDouble() - 0.5) * 0.4;
-            _pVy[i] = (_rng.NextDouble() - 0.5) * 0.3;
-        }
-        PositionParticles();
-    }
-
-    private void PositionParticles()
-    {
-        for (int i = 0; i < _particles.Length; i++)
-        {
-            Canvas.SetLeft(_particles[i], _pX[i]);
-            Canvas.SetTop(_particles[i], _pY[i]);
-        }
-    }
-
-    private void UpdateParticles()
-    {
-        if (ParticleCanvas.ActualWidth <= 0) return;
-        double w = ParticleCanvas.ActualWidth;
-        double h = Math.Min(ParticleCanvas.ActualHeight, 120);
-        for (int i = 0; i < _particles.Length; i++)
-        {
-            _pX[i] += _pVx[i];
-            _pY[i] += _pVy[i];
-            if (_pY[i] < 0) { _pY[i] = 0; _pVy[i] = -_pVy[i]; }
-            if (_pY[i] > h - 4) { _pY[i] = h - 4; _pVy[i] = -_pVy[i]; }
-            if (_pX[i] < 0) { _pX[i] = 0; _pVx[i] = -_pVx[i]; }
-            if (_pX[i] > w - 4) { _pX[i] = w - 4; _pVx[i] = -_pVx[i]; }
-            Canvas.SetLeft(_particles[i], _pX[i]);
-            Canvas.SetTop(_particles[i], _pY[i]);
-        }
     }
 
     private void UpdateVisualizer(float rms)
