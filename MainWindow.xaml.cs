@@ -361,6 +361,9 @@ public partial class MainWindow : Window
         // 通过 Topmost 翻转强制 WPF 重新合成绘制，保证托盘单击后窗口一定可见。
         Topmost = true;
         Topmost = false;
+
+        // 窗口恢复显示后，把播放列表滚动到当前播放歌曲所在位置
+        ScrollToCurrentSong();
     }
 
     private void HideToTray()
