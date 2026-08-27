@@ -7,7 +7,7 @@
 
 ## 快速运行
 
-- 直接双击 `publish-single\Mp3Player.exe` 即可运行，无需安装 .NET（运行时已打包进单文件）。
+- 直接双击 `publish-single\Mp3Player_v1.0.0.exe` 即可运行，无需安装 .NET（运行时已打包进单文件，文件名中的版本号随每次发布更新）。
 - 单文件自包含，支持 Windows 10/11 x64。
 - 程序为单实例，重复启动会提示"已在运行"。
 
@@ -77,7 +77,7 @@
 ```
 D:\MP3player
 ├─ publish-single\            # 发布目录（唯一运行形态）
-│  ├─ Mp3Player.exe           # 单文件自包含可执行程序
+│  ├─ Mp3Player_v1.0.0.exe    # 单文件自包含可执行程序（文件名带版本号）
 │  └─ data\settings.json      # 用户数据（播放列表、设置）
 ├─ App.xaml(.cs)              # 入口，单实例互斥
 ├─ MainWindow.xaml(.cs)       # 主窗口（播放、频谱、唱片、列表、托盘、快捷键等）
@@ -115,8 +115,16 @@ dotnet publish -c Release -r win-x64 --self-contained true `
   -o publish-single
 ```
 
+### 版本号规则
+
+- 版本号格式为 `主版本.次版本`（当前 1.0.0），维护在 `Mp3Player.csproj` 的 `<Version>` 中
+- 小改动（修复 bug、界面微调）：次版本号 +1，如 `1.0.0 → 1.1.0`
+- 大改动（新功能、界面重构、重大变更）：主版本号 +1，如 `1.1.0 → 2.0.0`
+- 发布后把 exe 重命名为 `Mp3Player_v<版本号>.exe`，并同步更新桌面快捷方式
+
 发布注意事项：
 
 - 发布前先关闭正在运行的 `Mp3Player.exe`，否则 exe 被占用会发布失败
 - 发布后删除 `publish-single\Mp3Player.pdb`
+- 发布后把 `publish-single\Mp3Player.exe` 重命名为 `Mp3Player_v<版本号>.exe`，并同步更新桌面快捷方式
 - 保留 `publish-single\data\settings.json`，不要覆盖用户数据

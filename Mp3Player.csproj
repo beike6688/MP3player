@@ -11,6 +11,7 @@
     <Product>炫音播放器</Product>
     <RootNamespace>Mp3Player</RootNamespace>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
