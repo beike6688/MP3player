@@ -3,6 +3,8 @@
 一款 Windows 桌面本地音乐播放器，使用 C# / WPF（.NET 8）开发。
 深色科技风 + 玻璃拟态 + Neon 霓虹光效，参考酷狗概念版的视觉风格，完全本地离线播放，无任何在线功能。
 
+![炫音播放器界面](Assets/screenshot.png)
+
 ## 快速运行
 
 - 直接双击 `publish-single\Mp3Player.exe` 即可运行，无需安装 .NET（运行时已打包进单文件）。
