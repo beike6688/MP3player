@@ -303,6 +303,8 @@ public partial class MainWindow : Window
         menu.Items.Add(new WinForms.ToolStripSeparator());
         menu.Items.Add("显示主窗口", null, (_, _) => Dispatcher.BeginInvoke(ShowMainWindow));
         menu.Items.Add(new WinForms.ToolStripSeparator());
+        menu.Items.Add("关于 炫音播放器", null, (_, _) => Dispatcher.BeginInvoke(ShowAbout));
+        menu.Items.Add(new WinForms.ToolStripSeparator());
         menu.Items.Add("退出", null, (_, _) => Dispatcher.BeginInvoke(() =>
         {
             _closing = true;
@@ -320,6 +322,14 @@ public partial class MainWindow : Window
                 });
             }
         };
+    }
+
+    private static void ShowAbout()
+    {
+        var ver = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        string v = ver == null ? "未知" : $"{ver.Major}.{ver.Minor}.{ver.Build}";
+        MessageBox.Show($"炫音播放器\n软件版本 {v}\n\n专注本地音乐播放，完全本地离线运行。",
+            "关于 炫音播放器", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private static System.Drawing.Icon CreateAppIcon()
