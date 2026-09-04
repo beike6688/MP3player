@@ -8,6 +8,7 @@ public class PlayerService : IDisposable
     private AudioFileReader? _reader;
     private EqualizerSampleProvider? _eq;
     private bool _manualStop;
+    private float _volume = 0.8f;
 
     public event EventHandler? PlaybackCompleted;
 
@@ -21,10 +22,11 @@ public class PlayerService : IDisposable
 
     public float Volume
     {
-        get => _output?.Volume ?? 0.8f;
+        get => _volume;
         set
         {
-            if (_output != null) _output.Volume = Math.Clamp(value, 0f, 1f);
+            _volume = Math.Clamp(value, 0f, 1f);
+            if (_output != null) _output.Volume = _volume;
         }
     }
 
@@ -36,6 +38,8 @@ public class PlayerService : IDisposable
         _output = new WaveOutEvent { DesiredLatency = 200, NumberOfBuffers = 2 };
         _output.PlaybackStopped += OnPlaybackStopped;
         _output.Init(_eq);
+        // 播放设备是新建的，默认 100% 音量；必须把缓存的音量重新应用上去
+        _output.Volume = _volume;
         _output.Play();
     }
 
